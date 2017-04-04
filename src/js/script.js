@@ -9,6 +9,7 @@ import VueRouter from "vue-router";
 import List from './list.vue';
 import About from './about.vue';
 import Map from './map.vue';
+import Contribute from './contribute.vue';
 
 
 // ...
@@ -33,6 +34,10 @@ const router = new VueRouter({
         {
             path: '/map',
             component: Map
+        },
+        {
+            path: '/contribute',
+            component: Contribute
         }
     ]
 });
@@ -46,3 +51,4 @@ new Vue({
     },
     template: '<app></app>'
 });
+
