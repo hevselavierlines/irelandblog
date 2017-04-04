@@ -29,6 +29,7 @@
 
 <script>
     import firebase from "./firebase";
+    import axios from "axios";
     export default {
         data: function() {
             return {
@@ -84,32 +85,36 @@
                     var progress = document.getElementById("myBar");
                     for(var i = 0; i < imagesLength; i++) {
                         var unix = (new Date()).getTime();
-                        var mountainsRef = storageRef.child('image ' + unix + '.jpg');
-                        mountainsRef.putString(this.images[i], 'data_url').then(function(snapshot) {
-                            var downloadURL = snapshot.downloadURL;
-                            imageURLs.push(downloadURL);
-                            var width = (imageURLs.length / imagesLength) * 100.0;
-                            progress.style.width = width + '%';
-                            console.log(width);
-                            if(imageURLs.length == imagesLength) {
-                                var sending = {
-                                    title: title,
-                                    message: message,
-                                    images: imageURLs,
-                                    createdAt: unix,
-                                    lat: latitude,
-                                    lon: longitude
-                                };
-                                const blogs = firebase.database().ref('blogs').push();
-                                blogs.set(sending).catch(function(error) {
-                                    console.error(error);
-                                }).then(() => {
-                                    console.log('writing complete', sending);
-                                });
-                                progressBar.style.visibility = "hidden";
-                                progress.style.width = "0%";
-                            }
-                        });
+
+                        axios.post('http://www.appc.at/irishblog/blogimage.php', this.images[i])
+                            .then(function (response) {
+                                console.log(response);
+                                var downloadURL = response.data.image;
+                                imageURLs.push(downloadURL);
+                                var width = (imageURLs.length / imagesLength) * 100.0;
+                                progress.style.width = width + '%';
+                                if(imageURLs.length == imagesLength) {
+                                    var sending = {
+                                        title: title,
+                                        message: message,
+                                        images: imageURLs,
+                                        createdAt: unix,
+                                        lat: latitude,
+                                        lon: longitude
+                                    };
+                                    const blogs = firebase.database().ref('blogs').push();
+                                    blogs.set(sending).catch(function(error) {
+                                        console.error(error);
+                                    }).then(() => {
+                                        console.log('writing complete', sending);
+                                    });
+                                    progressBar.style.visibility = "hidden";
+                                    progress.style.width = "0%";
+                                }
+                            })
+                            .catch(function (error) {
+                                console.log(error);
+                            });
                     }
 
                 });
