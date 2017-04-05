@@ -1,23 +1,29 @@
 <!-- ol-map.vue -->
 <template>
     <div id="themap">
-        <slot></slot>
     </div>
 </template>
 
 <style scoped>
     #themap {
-        width:90%;
-        height:90%;
-        margin-left:5%;
     }
 </style>
 
 <script>
     import ol from "openlayers";
     import firebase from "./firebase";
+    var outsidemap;
     export default  {
         name: "OLMap",
+        props: {
+            autoCenter: Boolean,
+            center: {
+                type: Array,
+                default: () => {
+                    return [-7.933565, 53.473896];
+                }
+            }
+        },
         data: function() {
             return {
                 centre: ol.proj.fromLonLat([-7.933565, 53.473896]),
@@ -38,6 +44,7 @@
                     zoom: this.zoom
                 })
             });
+            outsidemap = this.olmap;
             var map = this.olmap;
 
             var vectorSource = new ol.source.Vector({
@@ -53,7 +60,7 @@
             vectorSource.addFeature(iconFeature);
 
             var iconStyle = new ol.style.Style({
-                image: new ol.style.Icon(/** @type {olx.style.IconOptions} */ ({
+                image: new ol.style.Icon( ({
                     anchor: [0.5, 46],
                     anchorXUnits: 'fraction',
                     anchorYUnits: 'pixels',
@@ -87,7 +94,7 @@
             firebase.auth().signInAnonymously().catch(function(error) {
                 console.error(error.message);
             }).then(() => {
-                console.log("logged in");
+                window.dispatchEvent(new Event('resize'));
                 firebase.database().ref('blogs').on('value', (snapshot) =>{
                     snapshot.forEach((childSnapshot) => {
                         var elem = childSnapshot.val();
@@ -99,7 +106,21 @@
                     });
                 });
             });
+        },
+    };
+    window.onresize = function()
+    {
+        console.log('resize');
+        var h = window.outerHeight - 400;
+        var w = window.outerWidth;
+
+        var mape = document.getElementsByClassName("ol-unselectable")[0];
+
+        if (mape != null && mape !== undefined) {
+            mape.setAttribute("height", h);
+            mape.setAttribute("width", w);
         }
+
     };
     /*
     module.exports = {

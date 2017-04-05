@@ -1,8 +1,9 @@
 <template lang="html">
-    <div>
+    <div class="container-fluid mainlist">
         <ul class="bloglist">
             <li class="blogentry" v-for="entry in entries">
-                <table class="blogtable" border="0">
+                <table class="table table-striped blogtable" border="0">
+                    <tbody>
                     <tr>
                         <td class="blogtitle">{{entry.title}}</td>
                     </tr>
@@ -10,14 +11,15 @@
                         <td class="blogtext">{{entry.message}}</td>
                     </tr>
                     <tr>
-                        <td>
+                        <td class="blogimagestd">
                             <ul class="blogimages">
                                 <li class="blogimage" v-for="(image, index) in entry.images" v-if="index < 3">
-                                    <img class="blogimageimg" v-bind:src="image" height="200px">
+                                    <img class="blogimageimg img-rounded" v-bind:src="image" height="200px">
                                 </li>
                             </ul>
                         </td>
                     </tr>
+                    </tbody>
                 </table>
             </li>
         </ul>
@@ -107,6 +109,9 @@
 </script>
 
 <style lang="sass" scoped>
+    .mainlist {
+        background-color: darkgreen;
+    }
     .bloglist {
         list-style-type: none;
         padding-left: 20px;
@@ -117,12 +122,6 @@
         margin-bottom:25px;
         margin-left: 10px;
         margin-right: 10px;
-    }
-    .bloglist .blogentry:nth-child(odd) {
-        background-color: #00C20D;
-    }
-    .bloglist .blogentry:nth-child(even) {
-        background-color: #B8B8B8;
     }
     .blogtable {
         width: 100%;
@@ -138,9 +137,7 @@
     }
     .blogimageimg {
         display: block;
-        padding-left: 10px;
-        padding-right: 10px;
-        padding: 10px;
+        margin: 10px;
     }
     .blogtitle {
         padding: 16px 10px;
@@ -153,5 +150,10 @@
         text-align: justify;
         padding: 5px 10px;
         width: 100%;
+        background-color: darkgrey;
+    }
+
+    .blogimagestd {
+        background-color: grey;
     }
 </style>

@@ -40,10 +40,12 @@
         background-color: #333;
         position: fixed;
         z-index: 999;
+        height: 50px;
     }
     .menu li{
         float: left;
         min-width: 100px;
+        height: 100%;
     }
     .menu li a {
         display: block;
@@ -51,6 +53,7 @@
         text-align: center;
         padding: 14px 16px;
         text-decoration: none;
+        height: 100%;
     }
     .menu a:hover {
         background-color: green;
@@ -66,7 +69,9 @@
     }
 
     .mainpart {
-        margin-top: 50px;
+        margin-top: 40px;
+        padding-top:10px;
+        padding-bottom: 10px;
     }
 
     .copyright {
