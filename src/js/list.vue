@@ -1,31 +1,24 @@
 <template lang="html">
     <div>
-        <h1> Blog List </h1>
-        <!--
-        <p>Loading: {{$store.state.loading}}</p>
-        <div v-if="$store.state.error">{{$state.store.error}}</div>
-        <ul>
-            <li v-for="todo in todos">
-                <input type="checkbox" v-bind:checked="todo.done" v-on:click="setDone(todo)">
-                {{todo.title}}<br/>
-                <small><button v-on:click="deleteTodo(todo.id)">delete</button></small>
-            </li>
-        </ul>
-
-        <form v-on:submit.prevent="addTodo(todoText)">
-            <input v-model="todoText">
-            <button type="submit">Add</button>
-        </form>
-        -->
         <ul class="bloglist">
             <li class="blogentry" v-for="entry in entries">
-                <h3>{{entry.title}}</h3>
-                <p>{{entry.message}}</p>
-                <ul class="blogimages">
-                     <li class="blogimage" v-for="(image, index) in entry.images" v-if="index < 3">
-                         <img class="blogimageimg" v-bind:src="image" height="200px">
-                     </li>
-                </ul>
+                <table class="blogtable" border="0">
+                    <tr>
+                        <td class="blogtitle">{{entry.title}}</td>
+                    </tr>
+                    <tr>
+                        <td class="blogtext">{{entry.message}}</td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <ul class="blogimages">
+                                <li class="blogimage" v-for="(image, index) in entry.images" v-if="index < 3">
+                                    <img class="blogimageimg" v-bind:src="image" height="200px">
+                                </li>
+                            </ul>
+                        </td>
+                    </tr>
+                </table>
             </li>
         </ul>
     </div>
@@ -116,17 +109,49 @@
 <style lang="sass" scoped>
     .bloglist {
         list-style-type: none;
+        padding-left: 20px;
+        padding-right: 20px;
+        padding-top: 25px;
     }
+    .blogentry {
+        margin-bottom:25px;
+        margin-left: 10px;
+        margin-right: 10px;
+    }
+    .bloglist .blogentry:nth-child(odd) {
+        background-color: #00C20D;
+    }
+    .bloglist .blogentry:nth-child(even) {
+        background-color: #B8B8B8;
+    }
+    .blogtable {
+        width: 100%;
+    }
+
     .blogimages {
         list-style-type: none;
         overflow: hidden;
     }
     .blogimages li {
         float: left;
+        background-color: transparent;
     }
     .blogimageimg {
         display: block;
-        margin-left: 10px;
-        margin-right: 10px;
+        padding-left: 10px;
+        padding-right: 10px;
+        padding: 10px;
+    }
+    .blogtitle {
+        padding: 16px 10px;
+        width: 100%;
+        background-color: darkgrey;
+        color: black;
+        font-size: 24px;
+    }
+    .blogtext {
+        text-align: justify;
+        padding: 5px 10px;
+        width: 100%;
     }
 </style>
