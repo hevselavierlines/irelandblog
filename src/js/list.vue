@@ -12,11 +12,20 @@
                     </tr>
                     <tr>
                         <td class="blogimagestd">
+                            <div class="row blogimages">
+                                <div class="col-md-4 blogimage" v-for="(image, index) in entry.images" v-if="index < 3">
+                                    <img class="blogimageimg img-rounded" v-bind:src="image">
+                                </div>
+                                <div class="blogimagehidden"v-for="(image, index) in entry.images" v-if="index >= 3">
+                                    <img class="blogimageimghidden" v-bind:src="image">
+                                </div>
+                            </div>
+                            <!--
                             <ul class="blogimages">
                                 <li class="blogimage" v-for="(image, index) in entry.images" v-if="index < 3">
-                                    <img class="blogimageimg img-rounded" v-bind:src="image" height="200px">
+                                    <img class="blogimageimg img-rounded" v-bind:src="image">
                                 </li>
-                            </ul>
+                            </ul>-->
                         </td>
                     </tr>
                     </tbody>
@@ -113,7 +122,7 @@
 
 <style lang="sass" scoped>
     .mainlist {
-        background-color: darkgreen;
+        background-color: #12660C;
     }
     .bloglist {
         list-style-type: none;
@@ -141,11 +150,12 @@
     .blogimageimg {
         display: block;
         margin: 10px;
+        height: 180px;
     }
     .blogtitle {
         padding: 16px 10px;
         width: 100%;
-        background-color: darkgrey;
+        background-color: #DE7F3E;
         color: black;
         font-size: 24px;
     }
@@ -153,10 +163,32 @@
         text-align: justify;
         padding: 5px 10px;
         width: 100%;
-        background-color: darkgrey;
+        background-color: #DE7F3E;
     }
 
     .blogimagestd {
-        background-color: grey;
+        background-color: #DE7F3E;
+    }
+
+    .blogimagehidden {
+        display: none;
+    }
+
+    @media (max-width: 480px) {
+        .bloglist {
+            padding-left: 0px;
+            padding-right: 0px;
+        }
+
+        .blogentry {
+            margin-left: 4px;
+            margin-right: 4px;
+        }
+
+        .blogimageimg {
+            margin: 0;
+            height: auto;
+            width: 100%;
+        }
     }
 </style>

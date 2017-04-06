@@ -53,7 +53,7 @@
 
         padding-left: 50px;
         overflow: hidden;
-        background-color: #333;
+        background-color: black;
         position: fixed;
         z-index: 999;
         height: 50px;
@@ -74,7 +74,7 @@
             min-width: 50px;
         }
         .menuelement a {
-            font-size: 10px;
+            font-size: 12px;
             padding: 14px 16px;
         }
     }
@@ -88,12 +88,12 @@
         height: 100%;
     }
     .menu a:hover {
-        background-color: green;
+        background-color: #3FCC58;
         text-decoration: underline;
     }
 
     .menu .router-link-active {
-        background-color: darkgreen;
+        background-color: #12660C;
     }
 
     .menuline {
