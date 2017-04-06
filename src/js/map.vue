@@ -7,8 +7,8 @@
             <transition name="modal">
                 <div class="modal-mask">
                     <div class="modal-wrapper">
-                        <div class="modal-hidden" @click="$emit('close')"></div>
                         <button class="btn btn-default buttonclose" @click="$emit('close')">X</button>
+                        <div class="modal-hidden" @click="$emit('close')"></div>
                         <div class="modal-container" id="modul-container" @click="$emit('null')">
                             <div class="modal-header" @click="$emit('null')">
                                 <slot name="header">
@@ -164,7 +164,7 @@
 <style lang="sass">
     .modal-mask {
         position: fixed;
-        z-index: 9998;
+        z-index: 9990;
         top: 0;
         left: 0;
         bottom: 0;

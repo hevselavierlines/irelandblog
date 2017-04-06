@@ -7,15 +7,15 @@
     "url": "git+https://github.com/ralphbert/hue-workflow.git"
   },
   "keywords": [],
-  "author": "Ralph Harrer",
+  "author": "Manuel Baumgartner",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/ralphbert/hue-workflow/issues"
+    "url": "https://github.com/hevselavierlines/irelandblog/issues"
   },
   "scripts": {
     "test": "./node_modules/mocha/bin/mocha --compilers js:babel-register"
   },
-  "homepage": "https://github.com/ralphbert/hue-workflow#readme",
+  "homepage": "https://github.com/hevselavierlines/irelandblog",
   "devDependencies": {
     "babel-core": "^6.22.1",
     "babel-loader": "^6.2.10",
