@@ -8,7 +8,7 @@
                         <td class="blogtitle">{{entry.title}}</td>
                     </tr>
                     <tr>
-                        <td class="blogtext">{{entry.message}}</td>
+                        <td class="blogtext" v-html="entry.message"></td>
                     </tr>
                     <tr>
                         <td class="blogimagestd">
@@ -74,7 +74,10 @@
                 firebase.database().ref('blogs').on('value', (snapshot) =>{
                     let newMessages = [];
                     snapshot.forEach((childSnapshot) => {
-                        newMessages.push(childSnapshot.val());
+                        var value = childSnapshot.val();
+                        console.log(value);
+                        value.message = value.message.replace( new RegExp( "\n", "g" ),'<br/>');
+                        newMessages.push(value);
                     });
                     this.entries = newMessages;
                 });

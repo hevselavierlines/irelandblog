@@ -8,17 +8,27 @@
         </form>
     </div>
 
-    <div v-else>
+    <div v-else class="forminfo">
         <form v-on:submit.prevent="send(title, message)">
-            Title: <input type="text" v-model="title"><br/>
-            Message: <input type="text" v-model="message"><br/>
-            Location:
+            <div class="form-group">
+                <label for="title">Title:</label>
+                <input type="text" class="form-control" v-model="title" id="title">
+            </div>
+            <div class="form-group">
+                <label for="message">Message:</label>
+                <textarea class="form-control" rows="5" v-model="message" title="message"></textarea>
+            </div>
+            <div class="form-group">
+                <label>Location:</label>
                 <input type="number" id="latitude" step="any">
-                <input type="number" id="longitude" step="any"><br/>
-            Pictures:
+                <input type="number" id="longitude" step="any">
+            </div>
+            <div class="form-group">
+                <label for="file">Pictures:</label>
                 <input type="file" multiple id="file" @change="onFileChange" class="fileupload">
+            </div>
 
-            <button type="submit">Post</button>
+            <button class="btn btn-default" type="submit">Post</button>
         </form>
 
         <div id="myProgress">
@@ -147,5 +157,10 @@
         width: 0%;
         height: 30px;
         background-color: blue;
+    }
+    .forminfo {
+        margin-left: 20px;
+        margin-right: 20px;
+        margin-top: 50px;
     }
 </style>

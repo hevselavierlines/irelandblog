@@ -1,5 +1,6 @@
 <template>
     <div>
+        <!--
         <ul class="menu">
             <li>
                 <router-link to="/" exact>List</router-link>
@@ -17,6 +18,21 @@
                 <router-link to="/contribute">Contribute</router-link>
             </li>
         </ul>
+        -->
+        <div class="row menu">
+            <div class="col-md-3 menuelement">
+                <router-link to="/" exact>List</router-link>
+            </div>
+            <div class="col-md-3 menuelement">
+                <router-link to="/map">Map</router-link>
+            </div>
+            <div class="col-md-3 menuelement">
+                <router-link to="/about">About</router-link>
+            </div>
+            <div class="col-md-3 menuelement">
+                <router-link to="/contribute">Contribute</router-link>
+            </div>
+        </div>
 
         <router-view class="mainpart">
 
@@ -42,16 +58,32 @@
         z-index: 999;
         height: 50px;
     }
-    .menu li{
+    .menuelement{
         float: left;
-        min-width: 100px;
         height: 100%;
+        min-width: 100px;
+        padding-left: 0px;
+        padding-right: 0px;
     }
-    .menu li a {
+
+    @media (max-width: 480px) {
+        .menu {
+            padding-left: 0px;
+        }
+        .menuelement {
+            min-width: 50px;
+        }
+        .menuelement a {
+            font-size: 10px;
+            padding: 14px 16px;
+        }
+    }
+
+    .menuelement a {
         display: block;
         color: white;
         text-align: center;
-        padding: 14px 16px;
+        padding: 17px 16px;
         text-decoration: none;
         height: 100%;
     }

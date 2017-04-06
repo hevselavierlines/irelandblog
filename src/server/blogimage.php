@@ -7,6 +7,7 @@
  */
 
 header('Access-Control-Allow-Origin: *');
+ini_set ('memory_limit', '800M');
 
 $rawdata = file_get_contents('php://input');
 
@@ -15,17 +16,19 @@ $folder = 'images/';
 $host = "http://www.appc.at/irishblog/";
 
 $splited = explode(',', substr( $rawdata , 5 ) , 2);
+
 $mime=$splited[0];
 $data=$splited[1];
-
-$mime_split_without_base64=explode(';', $mime,2);
-$mime_split=explode('/', $mime_split_without_base64[0],2);
+unset($rawdata);
 
 $imagepath = $folder . $imagename;
 
-file_put_contents($imagepath, base64_decode($data) );
+$base64decode = base64_decode($data);
+file_put_contents($imagepath, $base64decode);
+unset($data);
+unset($base64decode);
 
-$exif = exif_read_data($imagepath);
+$exif = @exif_read_data($imagepath);
 
 if (!empty($exif['Orientation'])) {
     $image = imagecreatefromjpeg ( $imagepath);
@@ -43,7 +46,10 @@ if (!empty($exif['Orientation'])) {
             break;
     }
     imagejpeg($image, $imagepath);
+    imagedestroy($image);
+    unset($image);
 }
+
 
 $result =  array('image' => $host . $imagepath);
 print(json_encode($result));
