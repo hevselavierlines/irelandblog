@@ -45,35 +45,6 @@
                 entries: []
             }
         },
-        /*
-        methods: {
-            addTodo: function(text) {
-                if(text && text.length) {
-                    this.$store.dispatch('addTodo', {text: text});
-                    this.todoText = '';
-                }
-            },
-            deleteTodo: function(id) {
-                if(id) {
-                    this.$store.dispatch('removeTodo', {id: id});
-                }
-            },
-            setDone: function(todo) {
-                if(todo) {
-                    this.$store.dispatch('setDone', {id: todo.id, done: !todo.done});
-                }
-            }
-        },
-        computed: {
-            todos: function() {
-                return this.$store.state.todos;
-            }
-        },
-        mounted: function() {
-            this.$store.dispatch("loadTodos");
-
-        }
-        */
         mounted: function () {
             firebase.auth().signInAnonymously().catch(function(error) {
                 console.error(error.message);
@@ -81,46 +52,25 @@
             }).then(() => {
                 this.status = "signed in";
                 firebase.database().ref('blogs').on('value', (snapshot) =>{
-                    let newMessages = [];
+                    let blogEntries = [];
                     snapshot.forEach((childSnapshot) => {
                         var value = childSnapshot.val();
-                        console.log(value);
                         value.message = value.message.replace( new RegExp( "\n", "g" ),'<br/>');
-                        newMessages.push(value);
+                        blogEntries.push(value);
                     });
-                    this.entries = newMessages;
+                    blogEntries.reverse();
+                    this.entries = blogEntries;
+
                 });
             });
-            /*this.entries = [
-                {
-                    title: "Giant's causeway",
-                    message: "empty now",
-                    lon: -5.5534,
-                    lat: 45.3345,
-                    images: [
-                        "https://firebasestorage.googleapis.com/v0/b/irelandblog-bc379.appspot.com/o/IMG_2622.JPG?alt=media&token=351abb18-2744-4d5d-8140-58fa0ee68cd8",
-                        "https://firebasestorage.googleapis.com/v0/b/irelandblog-bc379.appspot.com/o/IMG_2622.JPG?alt=media&token=351abb18-2744-4d5d-8140-58fa0ee68cd8",
-                        "https://firebasestorage.googleapis.com/v0/b/irelandblog-bc379.appspot.com/o/IMG_2622.JPG?alt=media&token=351abb18-2744-4d5d-8140-58fa0ee68cd8"
-                    ]
-                },
-
-                {
-                    title: "Giant's causeway",
-                    message: "empty now",
-                    lon: -5.5534,
-                    lat: 45.3345,
-                    images: [
-                        "https://firebasestorage.googleapis.com/v0/b/irelandblog-bc379.appspot.com/o/IMG_2622.JPG?alt=media&token=351abb18-2744-4d5d-8140-58fa0ee68cd8",
-                        "https://firebasestorage.googleapis.com/v0/b/irelandblog-bc379.appspot.com/o/IMG_2622.JPG?alt=media&token=351abb18-2744-4d5d-8140-58fa0ee68cd8",
-                        "https://firebasestorage.googleapis.com/v0/b/irelandblog-bc379.appspot.com/o/IMG_2622.JPG?alt=media&token=351abb18-2744-4d5d-8140-58fa0ee68cd8"
-                    ]
-                }
-            ];*/
         }
     }
 </script>
 
 <style lang="sass" scoped>
+    /*$list-color: #DE7F3E;*/
+    $list-color: #CCCCCC;
+
     .mainlist {
         background-color: #12660C;
     }
@@ -155,7 +105,7 @@
     .blogtitle {
         padding: 16px 10px;
         width: 100%;
-        background-color: #DE7F3E;
+        background-color: $list-color;
         color: black;
         font-size: 24px;
     }
@@ -163,11 +113,11 @@
         text-align: justify;
         padding: 5px 10px;
         width: 100%;
-        background-color: #DE7F3E;
+        background-color: $list-color;
     }
 
     .blogimagestd {
-        background-color: #DE7F3E;
+        background-color: $list-color;
     }
 
     .blogimagehidden {
