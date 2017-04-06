@@ -11,7 +11,7 @@ ini_set ('memory_limit', '800M');
 
 $rawdata = file_get_contents('php://input');
 
-$imagename = "image" . date('Y-m-d-H-i-s') . ".jpg";
+$imagename = "image" . date('Y-m-d-H-i-s') . rand(1,1000000) . ".jpg";
 $folder = 'images/';
 $host = "http://www.appc.at/irishblog/";
 

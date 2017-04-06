@@ -99,8 +99,9 @@
     }
     .blogimageimg {
         display: block;
-        margin: 10px;
-        height: 180px;
+        padding: 10px;
+        height: auto;
+        width: 100%;
     }
     .blogtitle {
         padding: 16px 10px;

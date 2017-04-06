@@ -20,16 +20,17 @@
         </ul>
         -->
         <div class="row menu">
-            <div class="col-md-3 menuelement">
+            <div class="menuicon"><img src="img/shamrock_small.png"/></div>
+            <div class="col-md-2 menuelement">
                 <router-link to="/" exact>List</router-link>
             </div>
-            <div class="col-md-3 menuelement">
+            <div class="col-md-2 menuelement">
                 <router-link to="/map">Map</router-link>
             </div>
-            <div class="col-md-3 menuelement">
+            <div class="col-md-2 menuelement">
                 <router-link to="/about">About</router-link>
             </div>
-            <div class="col-md-3 menuelement">
+            <div class="col-md-2 menuelement">
                 <router-link to="/contribute">Contribute</router-link>
             </div>
         </div>
@@ -51,7 +52,6 @@
         list-style-type: none;
         margin: 0;
 
-        padding-left: 50px;
         overflow: hidden;
         background-color: black;
         position: fixed;
@@ -65,6 +65,13 @@
         padding-left: 0px;
         padding-right: 0px;
     }
+    .menuicon {
+        float: left;
+        height: 100%;
+        padding-left: 0px;
+        padding-right: 0px;
+        background-color: #12660C;
+    }
 
     @media (max-width: 480px) {
         .menu {
@@ -74,7 +81,7 @@
             min-width: 50px;
         }
         .menuelement a {
-            font-size: 12px;
+            font-size: 10px;
             padding: 14px 16px;
         }
     }

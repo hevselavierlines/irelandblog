@@ -7,10 +7,10 @@
             <transition name="modal">
                 <div class="modal-mask">
                     <div class="modal-wrapper">
-                        <button class="btn btn-default buttonclose" @click="$emit('close')">X</button>
                         <div class="modal-hidden" @click="$emit('close')"></div>
-                        <div class="modal-container" id="modul-container" @click="$emit('null')">
-                            <div class="modal-header" @click="$emit('null')">
+                        <button class="btn btn-default buttonclose" @click="$emit('close')">X</button>
+                        <div class="modal-container" id="modul-container">
+                            <div class="modal-header">
                                 <slot name="header">
                                 </slot>
                             </div>
@@ -95,11 +95,11 @@
 
             var iconStyle = new ol.style.Style({
                 image: new ol.style.Icon( ({
-                    anchor: [0.5, 46],
+                    anchor: [0.5, 25],
                     anchorXUnits: 'fraction',
                     anchorYUnits: 'pixels',
                     opacity: 0.75,
-                    src: 'http://openlayers.org/en/v3.9.0/examples/data/icon.png'
+                    src: '../img/shamrock_small.png'
                 }))
             });
 
@@ -169,15 +169,15 @@
         left: 0;
         bottom: 0;
         right: 0;
-        display: block;
         transition: opacity .3s ease;
-        overflow-y: scroll;
+        overflow: scroll;
     }
 
     .modal-wrapper {
         display: block;
         vertical-align: middle;
-        overflow: scroll;
+        margin: 5% auto;
+        width: 90%;
     }
 
     .modal-hidden{
@@ -187,13 +187,12 @@
         left: 0;
         right: 0;
         z-index: -1;
-        overflow: auto;
-        background-color: rgba(0, 0, 0, .5);
+        overflow: scroll;
+        background-color: rgba(0, 0, 0, 0.5);
     }
 
     .modal-container {
-        width: 90%;
-        margin: 5% auto;
+        width: 100%;
         padding: 20px 30px;
         background-color: #EEEEEE;
         border-radius: 2px;
@@ -237,6 +236,12 @@
     .buttonclose {
         position: fixed;
         right: 5%;
-        top: 5%;
+        top: 10%;
+    }
+
+    @media (min-width: 480px) {
+        .buttonclose {
+            padding: 8px 16px;
+        }
     }
 </style>

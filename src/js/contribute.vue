@@ -116,10 +116,11 @@
                                     blogs.set(sending).catch(function(error) {
                                         console.error(error);
                                     }).then(() => {
+                                        progressBar.style.visibility = "hidden";
+                                        progress.style.width = "0%";
                                         console.log('writing complete', sending);
                                     });
-                                    progressBar.style.visibility = "hidden";
-                                    progress.style.width = "0%";
+
                                 }
                             })
                             .catch(function (error) {
