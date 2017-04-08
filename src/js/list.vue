@@ -5,7 +5,12 @@
                 <table class="table table-striped blogtable" border="0">
                     <tbody>
                     <tr>
-                        <td class="blogtitle">{{entry.title}}</td>
+                        <td class="blogtitle"><h3>{{entry.title}}</h3>
+                            <p class="blogtime">
+                                <img src="img/clock.png">
+                                {{getTime(entry.createdAt)}}
+                            </p>
+                        </td>
                     </tr>
                     <tr>
                         <td class="blogtext" v-html="entry.message"></td>
@@ -14,18 +19,16 @@
                         <td class="blogimagestd">
                             <div class="row blogimages">
                                 <div class="col-md-4 blogimage" v-for="(image, index) in entry.images" v-if="index < 3">
-                                    <img class="blogimageimg img-rounded" v-bind:src="image">
+                                    <lightbox v-bind:album="entry.title" v-bind:src="image">
+                                        <img class="blogimageimg img-rounded" v-bind:src="image">
+                                    </lightbox>
                                 </div>
                                 <div class="blogimagehidden"v-for="(image, index) in entry.images" v-if="index >= 3">
-                                    <img class="blogimageimghidden" v-bind:src="image">
+                                    <lightbox v-bind:album="entry.title" v-bind:src="image">
+                                        <img class="blogimageimghidden" v-bind:src="image">
+                                    </lightbox>
                                 </div>
                             </div>
-                            <!--
-                            <ul class="blogimages">
-                                <li class="blogimage" v-for="(image, index) in entry.images" v-if="index < 3">
-                                    <img class="blogimageimg img-rounded" v-bind:src="image">
-                                </li>
-                            </ul>-->
                         </td>
                     </tr>
                     </tbody>
@@ -63,16 +66,41 @@
 
                 });
             });
+        },
+        methods: {
+            getTime: function(timestamp) {
+                var a = new Date(timestamp);
+                var months = ['January','February','March','April','May','June','July',
+                    'August','September','October','November','December'];
+                var year = a.getFullYear();
+                var month = months[a.getMonth()];
+                var date = a.getDate();
+                var hour = a.getHours();
+                var min = a.getMinutes();
+
+                if(date < 10) {
+                    date = '0' + date;
+                }
+                if(hour < 10) {
+                    hour = '0' + hour;
+                }
+                if(min < 10) {
+                    min = '0' + min;
+                }
+                var time = date + ' ' + month + ' ' + year + ' ' + hour + ':' + min;
+                return time;
+            }
         }
     }
 </script>
 
-<style lang="sass" scoped>
+<style lang="sass">
     /*$list-color: #DE7F3E;*/
     $list-color: #CCCCCC;
+    $back-color: #12660C;
 
     .mainlist {
-        background-color: #12660C;
+        background-color: $back-color;
     }
     .bloglist {
         list-style-type: none;
@@ -84,6 +112,9 @@
         margin-bottom:25px;
         margin-left: 10px;
         margin-right: 10px;
+    }
+    .blogentry tr {
+        background-color: $list-color;
     }
     .blogtable {
         width: 100%;
@@ -104,12 +135,27 @@
         width: 100%;
     }
     .blogtitle {
-        padding: 16px 10px;
         width: 100%;
         background-color: $list-color;
-        color: black;
-        font-size: 24px;
     }
+
+    .blogtitle h3 {
+        padding-top: 0;
+        padding-left: 10px;
+        color: $back-color;
+        font-size: 32px;
+    }
+
+    .blogtime {
+        font-size: 14px;
+        color: black;
+        padding-left: 10px;
+    }
+
+    .blogtime img {
+        width: 14px;
+    }
+
     .blogtext {
         text-align: justify;
         padding: 5px 10px;
@@ -141,5 +187,9 @@
             height: auto;
             width: 100%;
         }
+    }
+
+    .lightbox {
+        position: fixed !important;
     }
 </style>

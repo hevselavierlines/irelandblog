@@ -10,6 +10,8 @@ import List from './list.vue';
 import About from './about.vue';
 import Map from './map.vue';
 import Contribute from './contribute.vue';
+import VueLightbox from 'vue-lightbox'
+
 
 
 // ...
@@ -44,7 +46,10 @@ const router = new VueRouter({
 
 Vue.component('modal', {
     template: '#modal-template'
-})
+});
+
+Vue.component("Lightbox",
+    VueLightbox);
 
 new Vue({
     el: "#app",
