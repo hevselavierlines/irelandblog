@@ -31,8 +31,14 @@
             <button class="btn btn-default" type="submit">Post</button>
         </form>
 
-        <div id="myProgress">
-            <div id="myBar"></div>
+        <div class="progress" id="progress">
+            <div id="progress-bar" class="progress-bar" role="progressbar" aria-valuenow="70"
+                 aria-valuemin="0" aria-valuemax="100" style="width:100%">
+                Push post-button to start
+            </div>
+        </div>
+        <div v-if="status != null">
+            {{status}}
         </div>
     </div>
 </template>
@@ -50,7 +56,7 @@
                 title: '',
                 message: '',
                 images:[],
-                status: "unknown"
+                status: null
             }
         },
         methods: {
@@ -79,20 +85,88 @@
                 reader.readAsDataURL(file);
             },
             send: function(title, message) {
+                this.status = null;
+                var progressBar = document.getElementById("progress");
+                progressBar.style.visibility = "visible";
+                var progress = document.getElementById("progress-bar");
+                progress.style.width = '0%';
+                progress.innerText = 0 + "/" + this.images.length;
+
+                this.sendSingleImage(0, this.images.length, []);
+            },
+            sendDb: function(imageURLs) {
+                var unix = (new Date()).getTime();
+                var latitude = parseFloat(document.getElementById("latitude").value);
+                var longitude = parseFloat(document.getElementById("longitude").value);
+                if(isNaN(latitude)) {
+                    latitude = 0.0;
+                }
+                if(isNaN(longitude)) {
+                    longitude = 0.0;
+                }
+                var sending = {
+                    title: this.title,
+                    message: this.message,
+                    images: imageURLs,
+                    createdAt: unix,
+                    lat: latitude,
+                    lon: longitude
+                };
+                console.log(sending);
+                const blogs = firebase.database().ref('blogs').push();
+                blogs.set(sending).catch(function(error) {
+                    console.error(error);
+                    statusMessage = "Error uploading " + error;
+                }).then(() => {
+                    var progressBar = document.getElementById("progress");
+                    var progress = document.getElementById("progress-bar");
+                    progressBar.style.visibility = "hidden";
+                    progress.style.width = "0%";
+                });
+            },
+            sendSingleImage: function(currentId, maxId, imageURLs) {
+                var loc_image = this.images;
+                var loc_sendSingleImage = this.sendSingleImage;
+                var loc_sendDb = this.sendDb;
+                axios.post('http://www.appc.at/irishblog/blogimage.php', this.images[currentId])
+                    .then(function(response) {
+                        console.log(response.data);
+                        var downloadURL = response.data.image;
+                        imageURLs.push(downloadURL);
+
+                        var progress = document.getElementById("progress-bar");
+                        var width = (imageURLs.length / maxId) * 100.0;
+                        progress.style.width = width + '%';
+                        progress.innerText = imageURLs.length + "/" + maxId;
+
+                        if(imageURLs.length < loc_image.length) {
+                            loc_sendSingleImage(currentId + 1, maxId, imageURLs);
+                        } else {
+                            loc_sendDb(imageURLs);
+                        }
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                        statusMessage = "Error " + error;
+                    });
+            }
+
+            /*send: function(title, message) {
+                this.status = null;
                 var imageURLs = [];
                 firebase.auth().signInAnonymously().catch(function(error) {
                     console.error(error.message);
                 }).then(() => {
                     this.status = "signed in";
                     console.log(title + "/" + message);
-                    var storageRef = firebase.storage().ref();
                     var latitude = parseFloat(document.getElementById("latitude").value);
                     var longitude = parseFloat(document.getElementById("longitude").value);
-
+                    var statusMessage = this.status;
                     var imagesLength = this.images.length;
-                    var progressBar = document.getElementById("myProgress");
+                    var progressBar = document.getElementById("progress");
                     progressBar.style.visibility = "visible";
-                    var progress = document.getElementById("myBar");
+                    var progress = document.getElementById("progress-bar");
+                    var completeMessage = this.complete;
                     for(var i = 0; i < imagesLength; i++) {
                         var unix = (new Date()).getTime();
 
@@ -103,6 +177,7 @@
                                 imageURLs.push(downloadURL);
                                 var width = (imageURLs.length / imagesLength) * 100.0;
                                 progress.style.width = width + '%';
+                                progress.innerText = imageURLs.length + "/" + imagesLength;
                                 if(imageURLs.length == imagesLength) {
                                     var sending = {
                                         title: title,
@@ -115,26 +190,28 @@
                                     const blogs = firebase.database().ref('blogs').push();
                                     blogs.set(sending).catch(function(error) {
                                         console.error(error);
+                                        statusMessage = "Error uploading " + error;
                                     }).then(() => {
                                         progressBar.style.visibility = "hidden";
                                         progress.style.width = "0%";
-                                        console.log('writing complete', sending);
+                                        statusMessage = "Upload successful!";
                                     });
 
                                 }
                             })
                             .catch(function (error) {
                                 console.log(error);
+                                statusMessage = "Error " + error;
                             });
                     }
 
                 });
 
-            }
+            }*/
 
         },
         mounted: function() {
-            var progressBar = document.getElementById("myProgress");
+            var progressBar = document.getElementById("progress");
             progressBar.style.visibility = "hidden";
 
             if (navigator.geolocation) {
@@ -150,15 +227,6 @@
 </script>
 
 <style lang="sass" scoped>
-    #myProgress {
-        width: 100%;
-        background-color: grey;
-    }
-    #myBar {
-        width: 0%;
-        height: 30px;
-        background-color: blue;
-    }
     .forminfo {
         margin-left: 20px;
         margin-right: 20px;

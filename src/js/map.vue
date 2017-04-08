@@ -32,7 +32,7 @@
             <h3 slot="header">
                 {{selection.title}}
             </h3>
-            <p slot="text" v-html="selection.message"></p>
+            <p slot="text" align="justify" v-html="selection.message"></p>
             <div slot="images" class="row">
                 <div class="col-md-4 blogimage" v-for="(image, index) in selection.images">
                     <img class="img-rounded" v-bind:src="image" width="100%">
