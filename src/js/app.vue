@@ -1,24 +1,5 @@
 <template>
     <div>
-        <!--
-        <ul class="menu">
-            <li>
-                <router-link to="/" exact>List</router-link>
-            </li>
-
-            <li>
-                <router-link to="/map">Map</router-link>
-            </li>
-
-            <li>
-                <router-link to="/about">About</router-link>
-            </li>
-
-            <li>
-                <router-link to="/contribute">Contribute</router-link>
-            </li>
-        </ul>
-        -->
         <div class="row menu">
             <div class="menuicon"><img src="img/shamrock_small.png"/></div>
             <div class="col-md-2 menuelement">

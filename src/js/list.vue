@@ -1,4 +1,5 @@
 <template lang="html">
+    <div>
     <div class="container-fluid mainlist">
         <ul class="bloglist">
             <li class="blogentry" v-for="entry in entries">
@@ -19,14 +20,10 @@
                         <td class="blogimagestd">
                             <div class="row blogimages">
                                 <div class="col-md-4 blogimage" v-for="(image, index) in entry.images" v-if="index < 3">
-                                    <lightbox v-bind:album="entry.title" v-bind:src="image">
-                                        <img class="blogimageimg img-rounded" v-bind:src="image">
-                                    </lightbox>
-                                </div>
-                                <div class="blogimagehidden"v-for="(image, index) in entry.images" v-if="index >= 3">
-                                    <lightbox v-bind:album="entry.title" v-bind:src="image">
-                                        <img class="blogimageimghidden" v-bind:src="image">
-                                    </lightbox>
+                                    <a href="#" @click="showPicture(entry, index)">
+                                        <img class="blogimageimg img-rounded"
+                                             v-bind:src="image">
+                                    </a>
                                 </div>
                             </div>
                         </td>
@@ -35,6 +32,24 @@
                 </table>
             </li>
         </ul>
+    </div>
+        <div v-if="selection != null">
+        <transition name="modal">
+            <div class="modal-mask">
+                <div class="modal-hidden" @click="selection = null"></div>
+                <button class="btn btn-default buttonclose" @click="selection = null">X</button>
+                <div class="modal-container" id="modul-container">
+                    <a href="#" class="picture-before" @click="lastPicture()">
+                        <img src="img/prev.png">
+                    </a>
+                    <a href="#" class="picture-next" @click="nextPicture()">
+                        <img src="img/next.png">
+                    </a>
+                    <img class="modal-picture" v-bind:src="currentPicture">
+                </div>
+            </div>
+        </transition>
+        </div>
     </div>
 </template>
 
@@ -45,7 +60,10 @@
             return {
                 status: 'unknown',
                 todoText: '',
-                entries: []
+                entries: [],
+                selection: null,
+                currentPicture: "",
+                currentId: -1
             }
         },
         mounted: function () {
@@ -89,15 +107,39 @@
                 }
                 var time = date + ' ' + month + ' ' + year + ' ' + hour + ':' + min;
                 return time;
+            },
+            lastPicture: function() {
+                console.log('last pic');
+                this.currentId -= 1;
+                if(this.currentId >= 0) {
+                    this.currentPicture = this.selection.images[this.currentId];
+                } else {
+                    this.currentId = 0;
+                }
+            },
+            nextPicture: function() {
+                console.log('next pic');
+                this.currentId += 1;
+                if(this.currentId < this.selection.images.length) {
+                    this.currentPicture = this.selection.images[this.currentId];
+                } else {
+                    this.currentId = this.selection.images.length - 1;
+                }
+            },
+            showPicture: function(blog, pictureId) {
+                this.selection = blog;
+                this.currentId = pictureId;
+                this.currentPicture = blog.images[pictureId];
             }
         }
     }
 </script>
 
-<style lang="sass">
+<style lang="sass" scoped>
     /*$list-color: #DE7F3E;*/
     $list-color: #CCCCCC;
     $back-color: #12660C;
+    $next-url: 'img/next.png';
 
     .mainlist {
         background-color: $back-color;
@@ -133,7 +175,18 @@
         padding: 10px;
         height: auto;
         width: 100%;
+
+        opacity: 1.0;
+        -webkit-transition: opacity 0.6s;
+        -moz-transition: opacity 0.6s;
+        -o-transition: opacity 0.6s;
+        transition: opacity 0.6s;
     }
+
+    .blogimageimg:hover {
+        opacity: 0.75;
+    }
+
     .blogtitle {
         width: 100%;
         background-color: $list-color;
@@ -167,10 +220,6 @@
         background-color: $list-color;
     }
 
-    .blogimagehidden {
-        display: none;
-    }
-
     @media (max-width: 480px) {
         .bloglist {
             padding-left: 0px;
@@ -187,9 +236,160 @@
             height: auto;
             width: 100%;
         }
+
+        .modal-container {
+            height: auto;
+            max-height: 100%;
+        }
     }
 
-    .lightbox {
-        position: fixed !important;
+    /* start of the custom lightbox*/
+
+    .modal-mask {
+        position: fixed;
+        z-index: 9990;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        right: 0;
+        transition: opacity .3s ease;
+
+        display: block;
+        vertical-align: middle;
+        margin-top: 3%;
+        margin-bottom: 3%;
+        margin-left: auto;
+        margin-right: auto;
+        max-width: 90%;
+    }
+
+    .modal-hidden{
+        position: fixed;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        z-index: -1;
+        background-color: rgba(0, 0, 0, 0.5);
+    }
+
+    .modal-container {
+        padding: 20px;
+        background-color: #EEEEEE;
+        transition: all .3s ease;
+        font-family: Helvetica, Arial, sans-serif;
+        z-index: 9990;
+        margin-bottom: 10px;
+        height: 100%;
+
+        vertical-align: middle;
+        border-radius: 6px;
+    }
+
+
+    .picture-before {
+        float: left;
+        display: block;
+        position: absolute;
+        left: 0%;
+        height: 100%;
+        width: 50%;
+        z-index: 9900;
+        top: 0%;
+
+        opacity: 0;
+        -webkit-transition: opacity 0.6s;
+        -moz-transition: opacity 0.6s;
+        -o-transition: opacity 0.6s;
+        transition: opacity 0.6s;
+    }
+
+    .picture-before:hover {
+        opacity: 1.0;
+    }
+
+    .picture-before img {
+        float: left;
+        margin-top: 45%;
+    }
+
+    .picture-next {
+        float: right;
+        display: block;
+        position: absolute;
+        right: 0%;
+        height: 100%;
+        width: 50%;
+        z-index: 9900;
+        top: 0%;
+
+        opacity: 0;
+        -webkit-transition: opacity 0.6s;
+        -moz-transition: opacity 0.6s;
+        -o-transition: opacity 0.6s;
+        transition: opacity 0.6s;
+    }
+
+    .picture-next:hover {
+        opacity: 1.0;
+    }
+
+    .picture-next img {
+        float: right;
+        margin-top: 45%;
+    }
+
+    .modal-picture {
+        max-width: 100%;
+        max-height: 100%;
+        height: auto;
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+        vertical-align: middle;
+    }
+
+    .modal-header h3 {
+        margin-top: 0;
+        color: #3FCC58;
+    }
+
+    .modal-body {
+        margin: 20px 0;
+    }
+    /*
+     * The following styles are auto-applied to elements with
+     * transition="modal" when their visibility is toggled
+     * by Vue.js.
+     *
+     * You can easily play with the modal transition by editing
+     * these styles.
+     */
+
+    .modal-enter {
+        opacity: 0;
+    }
+
+    .modal-leave-active {
+        opacity: 0;
+    }
+
+    .modal-enter .modal-container,
+    .modal-leave-active .modal-container {
+        -webkit-transform: scale(1.1);
+        transform: scale(1.1);
+    }
+
+    .buttonclose {
+        position: fixed;
+        right: 5%;
+        top: 5%;
+        z-index: 9999;
+    }
+
+    @media (min-width: 480px) {
+        .buttonclose {
+            padding: 8px 16px;
+        }
     }
 </style>

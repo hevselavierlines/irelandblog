@@ -4,18 +4,18 @@
         <div id="themap">
         </div>
         <script type="text/x-template" id="modal-template">
-            <transition name="modal">
-                <div class="modal-mask">
-                    <div class="modal-wrapper">
-                        <div class="modal-hidden" @click="$emit('close')"></div>
+            <transition name="blogbox">
+                <div class="blogbox-mask">
+                    <div class="blogbox-wrapper">
+                        <div class="blogbox-hidden" @click="$emit('close')"></div>
                         <button class="btn btn-default buttonclose" @click="$emit('close')">X</button>
-                        <div class="modal-container" id="modul-container">
-                            <div class="modal-header">
+                        <div class="blogbox-container" id="modul-container">
+                            <div class="blogbox-header">
                                 <slot name="header">
                                 </slot>
                             </div>
 
-                            <div class="modal-body">
+                            <div class="blogbox-body">
                                 <slot name="text">
                                 </slot>
                                 <hr/>
@@ -40,7 +40,7 @@
             </div>
         </modal>
     </div>
-    <!-- template for the modal component -->
+    <!-- template for the blogbox component -->
 
 </template>
 
@@ -63,7 +63,7 @@
             return {
                 centre: ol.proj.fromLonLat([-7.933565, 53.473896]),
                 zoom: 7,
-                showModal: false,
+                showblogbox: false,
                 selection: null
             }
         },
@@ -115,7 +115,7 @@
                 if (feature) {
                     this.selection = feature.I.data;
                     console.log(this.selection);
-                    this.showModal = true;
+                    this.showblogbox = true;
                 }
             });
 
@@ -162,7 +162,7 @@
 </script>
 
 <style lang="sass">
-    .modal-mask {
+    .blogbox-mask {
         position: fixed;
         z-index: 9990;
         top: 0;
@@ -173,14 +173,14 @@
         overflow: scroll;
     }
 
-    .modal-wrapper {
+    .blogbox-wrapper {
         display: block;
         vertical-align: middle;
         margin: 5% auto;
         width: 90%;
     }
 
-    .modal-hidden{
+    .blogbox-hidden{
         position: fixed;
         top: 0;
         bottom: 0;
@@ -191,7 +191,7 @@
         background-color: rgba(0, 0, 0, 0.5);
     }
 
-    .modal-container {
+    .blogbox-container {
         width: 100%;
         padding: 20px 30px;
         background-color: #EEEEEE;
@@ -202,33 +202,33 @@
         z-index: 9998;
     }
 
-    .modal-header h3 {
+    .blogbox-header h3 {
         margin-top: 0;
         color: #3FCC58;
     }
 
-    .modal-body {
+    .blogbox-body {
         margin: 20px 0;
     }
     /*
      * The following styles are auto-applied to elements with
-     * transition="modal" when their visibility is toggled
+     * transition="blogbox" when their visibility is toggled
      * by Vue.js.
      *
-     * You can easily play with the modal transition by editing
+     * You can easily play with the blogbox transition by editing
      * these styles.
      */
 
-    .modal-enter {
+    .blogbox-enter {
         opacity: 0;
     }
 
-    .modal-leave-active {
+    .blogbox-leave-active {
         opacity: 0;
     }
 
-    .modal-enter .modal-container,
-    .modal-leave-active .modal-container {
+    .blogbox-enter .blogbox-container,
+    .blogbox-leave-active .blogbox-container {
         -webkit-transform: scale(1.1);
         transform: scale(1.1);
     }
@@ -237,6 +237,7 @@
         position: fixed;
         right: 5%;
         top: 10%;
+        z-index: 9999;
     }
 
     @media (min-width: 480px) {
