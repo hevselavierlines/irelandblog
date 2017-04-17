@@ -1,4 +1,4 @@
-<template lang="html">
+<template lang="html" v-el="template">
     <div>
     <div class="container-fluid mainlist">
         <ul class="bloglist">
@@ -20,7 +20,7 @@
                         <td class="blogimagestd">
                             <div class="row blogimages">
                                 <div class="col-md-4 blogimage" v-for="(image, index) in entry.images" v-if="index < 3">
-                                    <a href="#" @click="showPicture(entry, index)">
+                                    <a href="#" v-on:click.prevent="showPicture(entry, index)">
                                         <img class="blogimageimg img-rounded"
                                              v-bind:src="image">
                                     </a>
@@ -33,23 +33,21 @@
             </li>
         </ul>
     </div>
-        <div v-if="selection != null">
         <transition name="modal">
-            <div class="modal-mask">
-                <div class="modal-hidden" @click="selection = null"></div>
-                <button class="btn btn-default buttonclose" @click="selection = null">X</button>
+            <div class="modal-mask" id="modal-mask">
+                <div class="modal-hidden" @click="hideModal()"></div>
                 <div class="modal-container" id="modul-container">
-                    <a href="#" class="picture-before" @click="lastPicture()">
-                        <img src="img/prev.png">
+                    <button class="btn btn-default buttonclose" @click="hideModal()">X</button>
+                    <a href="#" class="picture-before" v-on:click.prevent="lastPicture">
+                        <img id="picturebefore" src="img/prev.png" ref="picturebefore">
                     </a>
-                    <a href="#" class="picture-next" @click="nextPicture()">
-                        <img src="img/next.png">
+                    <a href="#" class="picture-next" v-on:click.prevent="nextPicture">
+                        <img id="picturenext" src="img/next.png" ref="picturenext">
                     </a>
                     <img class="modal-picture" v-bind:src="currentPicture">
                 </div>
             </div>
         </transition>
-        </div>
     </div>
 </template>
 
@@ -63,7 +61,8 @@
                 entries: [],
                 selection: null,
                 currentPicture: "",
-                currentId: -1
+                currentId: -1,
+                modal: null
             }
         },
         mounted: function () {
@@ -84,6 +83,9 @@
 
                 });
             });
+
+            this.modal = document.getElementById("modal-mask");
+            this.hideModal();
         },
         methods: {
             getTime: function(timestamp) {
@@ -108,28 +110,55 @@
                 var time = date + ' ' + month + ' ' + year + ' ' + hour + ':' + min;
                 return time;
             },
-            lastPicture: function() {
-                console.log('last pic');
+            lastPicture: function(event) {
                 this.currentId -= 1;
                 if(this.currentId >= 0) {
                     this.currentPicture = this.selection.images[this.currentId];
                 } else {
                     this.currentId = 0;
                 }
+
+                this.checkArrows();
             },
-            nextPicture: function() {
-                console.log('next pic');
+            nextPicture: function(event) {
                 this.currentId += 1;
                 if(this.currentId < this.selection.images.length) {
                     this.currentPicture = this.selection.images[this.currentId];
                 } else {
                     this.currentId = this.selection.images.length - 1;
                 }
+
+                this.checkArrows();
             },
             showPicture: function(blog, pictureId) {
+                if(this.selection == null) {
+                    this.showModal();
+                }
                 this.selection = blog;
                 this.currentId = pictureId;
                 this.currentPicture = blog.images[pictureId];
+
+                this.checkArrows();
+            },
+            showModal: function() {
+                this.modal.style.display = "block";
+            },
+            hideModal: function() {
+                this.modal.style.display = "none";
+                this.selection = null;
+            },
+            checkArrows: function() {
+                var pictureId = this.currentId;
+                if(pictureId == 0) {
+                    document.getElementById("picturebefore").style.visibility = "hidden";
+                    document.getElementById("picturenext").style.visibility = "visible";
+                } else if(pictureId == this.selection.images.length - 1) {
+                    document.getElementById("picturebefore").style.visibility = "visible";
+                    document.getElementById("picturenext").style.visibility = "hidden";
+                } else {
+                    document.getElementById("picturebefore").style.visibility = "visible";
+                    document.getElementById("picturenext").style.visibility = "visible";
+                }
             }
         }
     }
@@ -181,10 +210,13 @@
         -moz-transition: opacity 0.6s;
         -o-transition: opacity 0.6s;
         transition: opacity 0.6s;
+
+        cursor: hand;
     }
 
     .blogimageimg:hover {
         opacity: 0.75;
+        cursor: hand;
     }
 
     .blogtitle {
@@ -260,7 +292,8 @@
         margin-bottom: 3%;
         margin-left: auto;
         margin-right: auto;
-        max-width: 90%;
+        max-width: 1000px;
+        overflow:auto;
     }
 
     .modal-hidden{
@@ -279,8 +312,8 @@
         transition: all .3s ease;
         font-family: Helvetica, Arial, sans-serif;
         z-index: 9990;
-        margin-bottom: 10px;
         height: 100%;
+        margin: auto;
 
         vertical-align: middle;
         border-radius: 6px;
@@ -296,6 +329,7 @@
         width: 50%;
         z-index: 9900;
         top: 0%;
+        visibility: visible;
 
         opacity: 0;
         -webkit-transition: opacity 0.6s;
@@ -309,8 +343,12 @@
     }
 
     .picture-before img {
-        float: left;
-        margin-top: 45%;
+        left: 0%;
+        cursor: pointer;
+        position: absolute;
+        top: 50%;
+        width: auto;
+        margin-top: -32px;
     }
 
     .picture-next {
@@ -322,6 +360,7 @@
         width: 50%;
         z-index: 9900;
         top: 0%;
+        visibility: visible;
 
         opacity: 0;
         -webkit-transition: opacity 0.6s;
@@ -335,8 +374,12 @@
     }
 
     .picture-next img {
-        float: right;
-        margin-top: 45%;
+        right: 0%;
+        cursor: pointer;
+        position: absolute;
+        top: 50%;
+        width: auto;
+        margin-top: -32px;
     }
 
     .modal-picture {
@@ -381,10 +424,11 @@
     }
 
     .buttonclose {
-        position: fixed;
-        right: 5%;
-        top: 5%;
+        position: absolute;
         z-index: 9999;
+        float: right;
+        top: 1%;
+        right: 1%;
     }
 
     @media (min-width: 480px) {

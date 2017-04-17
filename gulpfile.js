@@ -47,7 +47,7 @@ gulp.task('js', function () {
 });
 
 gulp.task('templates', function () {
-  gulp.src('src/templates/*.html')
+  gulp.src('src/templates/**')
     .pipe(plumber())
     .pipe(nunjucksRender({
       path: 'src/templates'

@@ -37,7 +37,7 @@ const router = new VueRouter({
             component: Map
         },
         {
-            path: '/contribute',
+            path: '/secure/contribute',
             component: Contribute
         }
     ]
@@ -56,4 +56,3 @@ new Vue({
     },
     template: '<app></app>'
 });
-

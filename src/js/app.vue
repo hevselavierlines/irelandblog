@@ -2,17 +2,14 @@
     <div>
         <div class="row menu">
             <div class="menuicon"><img src="img/shamrock_small.png"/></div>
-            <div class="col-md-2 menuelement">
+            <div class="col-md-3 menuelement">
                 <router-link to="/" exact>List</router-link>
             </div>
-            <div class="col-md-2 menuelement">
+            <div class="col-md-3 menuelement">
                 <router-link to="/map">Map</router-link>
             </div>
-            <div class="col-md-2 menuelement">
+            <div class="col-md-3 menuelement">
                 <router-link to="/about">About</router-link>
-            </div>
-            <div class="col-md-2 menuelement">
-                <router-link to="/contribute">Contribute</router-link>
             </div>
         </div>
 

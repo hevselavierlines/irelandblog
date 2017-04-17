@@ -1,4 +1,5 @@
 <template>
+    <!--
     <div v-if="nologin">
         <h2>Please login to continue</h2>
         <form v-on:submit.prevent="login(username, password)">
@@ -6,9 +7,9 @@
             Password: <input type="password" v-model="password"><br/>
             <button type="submit">Login</button>
         </form>
-    </div>
+    </div>-->
 
-    <div v-else class="forminfo">
+    <div class="forminfo">
         <form v-on:submit.prevent="send(title, message)">
             <div class="form-group">
                 <label for="title">Title:</label>
@@ -25,7 +26,7 @@
             </div>
             <div class="form-group">
                 <label for="file">Pictures:</label>
-                <input type="file" multiple id="file" @change="onFileChange" class="fileupload">
+                <input type="file" multiple accept="image/jpeg" id="file" @change="onFileChange" class="fileupload">
             </div>
 
             <button class="btn btn-default" type="submit">Post</button>
