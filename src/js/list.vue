@@ -86,8 +86,17 @@
 
             this.modal = document.getElementById("modal-mask");
             this.hideModal();
+
+            window.addEventListener('keyup', this.keyEvent);
         },
         methods: {
+            keyEvent: function(e) {
+                if(e.keyCode == 37) {
+                    this.lastPicture(null);
+                } else if(e.keyCode == 39) {
+                    this.nextPicture(null);
+                }
+            },
             getTime: function(timestamp) {
                 var a = new Date(timestamp);
                 var months = ['January','February','March','April','May','June','July',
@@ -111,24 +120,28 @@
                 return time;
             },
             lastPicture: function(event) {
-                this.currentId -= 1;
-                if(this.currentId >= 0) {
-                    this.currentPicture = this.selection.images[this.currentId];
-                } else {
-                    this.currentId = 0;
-                }
+                if(this.selection != null) {
+                    this.currentId -= 1;
+                    if (this.currentId >= 0) {
+                        this.currentPicture = this.selection.images[this.currentId];
+                    } else {
+                        this.currentId = 0;
+                    }
 
-                this.checkArrows();
+                    this.checkArrows();
+                }
             },
             nextPicture: function(event) {
-                this.currentId += 1;
-                if(this.currentId < this.selection.images.length) {
-                    this.currentPicture = this.selection.images[this.currentId];
-                } else {
-                    this.currentId = this.selection.images.length - 1;
-                }
+                if(this.selection != null) {
+                    this.currentId += 1;
+                    if (this.currentId < this.selection.images.length) {
+                        this.currentPicture = this.selection.images[this.currentId];
+                    } else {
+                        this.currentId = this.selection.images.length - 1;
+                    }
 
-                this.checkArrows();
+                    this.checkArrows();
+                }
             },
             showPicture: function(blog, pictureId) {
                 if(this.selection == null) {
@@ -427,13 +440,38 @@
         position: absolute;
         z-index: 9999;
         float: right;
+
         top: 1%;
         right: 1%;
+        bottom: auto;
+        left: auto;
+        width: 50px;
+        height: 40px;
     }
 
-    @media (min-width: 480px) {
+    @media (max-width: 480px) {
         .buttonclose {
-            padding: 8px 16px;
+            top: auto;
+            bottom: 11%;
+            right: 1%;
+            left: 1%;
+            width: 98%;
+            height: 50px;
+        }
+
+        .modal-container {
+            padding-left: 0;
+            padding-right: 0;
+            padding-top: auto;
+            height: 90%;
+        }
+
+        .picture-next {
+            height: 90%
+        }
+
+        .picture-before {
+            height: 90%;
         }
     }
 </style>
