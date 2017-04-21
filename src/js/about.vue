@@ -6,13 +6,39 @@
                     <table class="table table-striped blogtable" border="0">
                         <tbody>
                         <tr>
-                            <td class="blogtitle"><h3>About Me</h3>
+                            <td class="blogtitle">
+                                <h3>About Me</h3>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="blogimagestd">
+                                <img src="img/blogimage.jpg" class="img-circle">
                             </td>
                         </tr>
                         <tr>
                             <td class="blogtext">
-                                <p>I am Manuel Baumgartner a student of University of Applied Sciences Hagenberg</p>
-                                <p>This blog is about my semester abroad in Ireland. It is from August 2017 to December 2017.</p>
+                                <table class="table table-striped blogtexttable">
+                                    <tr>
+                                        <td class="blogtextleft">Name</td>
+                                        <td class="blogtextright">Manuel Baumgartner</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="blogtextleft">Place</td>
+                                        <td class="blogtextright">Hagenberg im M&uuml;hlkreis, Austria</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="blogtextleft">Birthday</td>
+                                        <td class="blogtextright">22/01/1994</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="blogtextleft">Languages</td>
+                                        <td class="blogtextright">German (Lv. C2), English (Lv. C1), Dutch (Lv. A1)</td>
+                                    </tr>
+                                </table>
+                                <p>I am Manuel Baumgartner a student of
+                                    University of Applied Sciences Hagenberg<br/>
+                                    This blog is about my semester abroad in Ireland. It is from August 2017 to December 2017.
+                                    Before this day all posts are from my last student exchange 2015 and 2016.</p>
                             </td>
                         </tr>
                         </tbody>
@@ -84,6 +110,7 @@
     }
 
     .blogtitle h3 {
+        display: inline-block;
         padding-top: 0;
         padding-left: 10px;
         color: $back-color;
@@ -105,10 +132,24 @@
         padding: 5px 10px;
         width: 100%;
         background-color: $list-color;
+        font-size: 22px;
     }
 
     .blogimagestd {
         background-color: $list-color;
+    }
+
+    .blogimagestd img {
+        margin-left: auto;
+        margin-right: auto;
+        text-align: center;
+        display: block;
+        max-height: 60%;
+        max-width: 100%;
+    }
+
+    .blogtextleft {
+        font-weight: bold;
     }
 
     @media (max-width: 480px) {
@@ -131,6 +172,10 @@
         .modal-container {
             height: auto;
             max-height: 100%;
+        }
+
+        .blogtext {
+            font-size: 14px;
         }
     }
 

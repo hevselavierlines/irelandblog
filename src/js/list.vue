@@ -1,5 +1,8 @@
 <template lang="html" v-el="template">
     <div>
+        <div class="loadinginfo" id="loadinginfo" v-if="loading < 4">
+            Loading...
+        <img src="img/spinner.gif" height="100px"/></div>
     <div class="container-fluid mainlist">
         <ul class="bloglist">
             <li class="blogentry" v-for="entry in entries">
@@ -35,16 +38,16 @@
     </div>
         <transition name="modal">
             <div class="modal-mask" id="modal-mask">
-                <div class="modal-hidden" @click="hideModal()"></div>
+                <div class="modal-hidden" @click="hideModal(true)"></div>
                 <div class="modal-container" id="modul-container">
-                    <button class="btn btn-default buttonclose" @click="hideModal()">X</button>
+                    <button class="btn btn-default buttonclose" @click="hideModal(true)">X</button>
                     <a href="#" class="picture-before" v-on:click.prevent="lastPicture">
                         <img id="picturebefore" src="img/prev.png" ref="picturebefore">
                     </a>
                     <a href="#" class="picture-next" v-on:click.prevent="nextPicture">
                         <img id="picturenext" src="img/next.png" ref="picturenext">
                     </a>
-                    <img class="modal-picture" v-bind:src="currentPicture">
+                    <img class="modal-picture" id="modal-picture" v-bind:src="currentPicture">
                 </div>
             </div>
         </transition>
@@ -52,13 +55,11 @@
 </template>
 
 <script>
-    import firebase from "./firebase";
     export default {
         data : function() {
             return {
                 status: 'unknown',
                 todoText: '',
-                entries: [],
                 selection: null,
                 currentPicture: "",
                 currentId: -1,
@@ -66,28 +67,21 @@
             }
         },
         mounted: function () {
-            firebase.auth().signInAnonymously().catch(function(error) {
-                console.error(error.message);
-                this.status = "error";
-            }).then(() => {
-                this.status = "signed in";
-                firebase.database().ref('blogs').on('value', (snapshot) =>{
-                    let blogEntries = [];
-                    snapshot.forEach((childSnapshot) => {
-                        var value = childSnapshot.val();
-                        value.message = value.message.replace( new RegExp( "\n", "g" ),'<br/>');
-                        blogEntries.push(value);
-                    });
-                    blogEntries.reverse();
-                    this.entries = blogEntries;
-
-                });
-            });
+            var loadinginfo = document.getElementById("loadinginfo");
+            this.$store.dispatch("loadBlogEntries");
 
             this.modal = document.getElementById("modal-mask");
-            this.hideModal();
+            this.hideModal(false);
 
             window.addEventListener('keyup', this.keyEvent);
+        },
+        computed: {
+            entries: function() {
+                return this.$store.state.blogEntries;
+            },
+            loading: function() {
+                return this.$store.state.loading;
+            }
         },
         methods: {
             keyEvent: function(e) {
@@ -123,7 +117,7 @@
                 if(this.selection != null) {
                     this.currentId -= 1;
                     if (this.currentId >= 0) {
-                        this.currentPicture = this.selection.images[this.currentId];
+                        this.changePicture();
                     } else {
                         this.currentId = 0;
                     }
@@ -135,12 +129,45 @@
                 if(this.selection != null) {
                     this.currentId += 1;
                     if (this.currentId < this.selection.images.length) {
-                        this.currentPicture = this.selection.images[this.currentId];
+                        this.changePicture();
                     } else {
                         this.currentId = this.selection.images.length - 1;
                     }
-
                     this.checkArrows();
+                }
+            },
+            changePicture: function() {
+                var pictureBox = document.getElementById("modal-picture");
+                var lastPic = true;
+                var alpha = 1.0;
+                var curPicture = this.currentPicture;
+                var nextPicture = this.selection.images[this.currentId];
+                var t2 = null;
+                function fadeOutPicture() {
+                    alpha -= 0.05;
+                    if(alpha <= 0.1) {
+                        alpha = 0.1;
+                        clearInterval(t);
+                        applyPicture();
+                    }
+                    pictureBox.style.opacity = alpha;
+                }
+
+                var t = setInterval(fadeOutPicture, 10);
+
+                function applyPicture() {
+                    pictureBox.setAttribute("src", nextPicture);
+                    pictureBox.onload = function() {
+                        t2 = setInterval(fadeInPicture, 10);
+                    };
+                }
+                function fadeInPicture() {
+                    alpha += 0.05;
+                    if(alpha >= 1.0) {
+                        alpha = 1.0;
+                        clearInterval(t2);
+                    }
+                    pictureBox.style.opacity = alpha;
                 }
             },
             showPicture: function(blog, pictureId) {
@@ -154,11 +181,45 @@
                 this.checkArrows();
             },
             showModal: function() {
-                this.modal.style.display = "block";
+                var elem=this.modal;
+                var alpha = 0;
+                elem.style.opacity = alpha;
+                elem.style.display = "block";
+
+                function moreVisible()
+                {
+                    if(alpha >= 1) {
+                        clearInterval(t);
+                    }
+                    alpha += 0.05;
+                    elem.style.opacity = alpha;
+                    elem.style.filter="alpha(opacity="+(alpha*100)+")";
+                }
+
+                var t=setInterval(moreVisible, 20);
             },
-            hideModal: function() {
-                this.modal.style.display = "none";
+            hideModal: function(animated) {
+                var elem=this.modal;
+                var alpha = 1.0;
                 this.selection = null;
+                elem.style.opacity = alpha;
+                elem.style.display = "block";
+
+                if(animated) {
+                    function lessVisible() {
+                        if (alpha <= 0) {
+                            clearInterval(t);
+                            elem.style.display = "none";
+                        }
+                        alpha -= 0.05;
+                        elem.style.opacity = alpha;
+                        elem.style.filter = "alpha(opacity=" + (alpha * 100) + ")";
+                    }
+
+                    var t = setInterval(lessVisible, 25);
+                } else {
+                    elem.style.display = "none";
+                }
             },
             checkArrows: function() {
                 var pictureId = this.currentId;
@@ -183,6 +244,14 @@
     $back-color: #12660C;
     $next-url: 'img/next.png';
 
+    .loadinginfo {
+        width: 100%;
+        height: 100px;
+        text-align: center;
+        vertical-align: middle;
+        margin-top: auto;
+        margin-bottom: auto;
+    }
     .mainlist {
         background-color: $back-color;
     }
@@ -202,6 +271,7 @@
     }
     .blogtable {
         width: 100%;
+        box-shadow: 0 4px 10px 0 rgba(0,0,0,0.2), 0 4px 20px 0 rgba(0,0,0,0.19);
     }
 
     .blogimages {
@@ -301,12 +371,13 @@
 
         display: block;
         vertical-align: middle;
-        margin-top: 3%;
+        /*margin-top: 3%;
         margin-bottom: 3%;
         margin-left: auto;
         margin-right: auto;
-        max-width: 1000px;
+        max-width: 1000px;*/
         overflow:auto;
+        background-color: rgba(0, 0, 0, 0.5);
     }
 
     .modal-hidden{
@@ -325,8 +396,12 @@
         transition: all .3s ease;
         font-family: Helvetica, Arial, sans-serif;
         z-index: 9990;
-        height: 100%;
+        height: 95%;
         margin: auto;
+
+        margin-top: 1%;
+        margin-bottom: 3%;
+        max-width: 1000px;
 
         vertical-align: middle;
         border-radius: 6px;
@@ -337,11 +412,11 @@
         float: left;
         display: block;
         position: absolute;
-        left: 0%;
-        height: 100%;
+        height: 90%;
         width: 50%;
+        max-width: 500px;
         z-index: 9900;
-        top: 0%;
+        top: 1%;
         visibility: visible;
 
         opacity: 0;
@@ -368,11 +443,12 @@
         float: right;
         display: block;
         position: absolute;
-        right: 0%;
-        height: 100%;
+        height: 90%;
         width: 50%;
+        margin-left: 480px;
+        max-width: 500px;
         z-index: 9900;
-        top: 0%;
+        top: 1%;
         visibility: visible;
 
         opacity: 0;
@@ -443,10 +519,47 @@
 
         top: 1%;
         right: 1%;
-        bottom: auto;
-        left: auto;
         width: 50px;
         height: 40px;
+    }
+
+    @media (max-width: 1000px) {
+        .picture-next {
+            margin-left: 0;
+            right: 0;
+        }
+
+        .modal-picture {
+            max-height: 90%;
+        }
+    }
+
+    @media (max-width: 640px) {
+        .buttonclose {
+            top: auto;
+            bottom: 5%;
+            right: 1%;
+            left: 1%;
+            width: 98%;
+            height: 35px;
+            position: absolute;
+        }
+
+        .modal-container {
+            padding-left: 0;
+            padding-right: 0;
+            padding-top: auto;
+            height: 95%;
+        }
+
+
+        .picture-next {
+            height: 95%
+        }
+
+        .picture-before {
+            height: 95%;
+        }
     }
 
     @media (max-width: 480px) {
@@ -457,6 +570,7 @@
             left: 1%;
             width: 98%;
             height: 50px;
+            position: absolute;
         }
 
         .modal-container {
@@ -465,6 +579,7 @@
             padding-top: auto;
             height: 90%;
         }
+
 
         .picture-next {
             height: 90%

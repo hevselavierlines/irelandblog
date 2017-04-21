@@ -17,15 +17,16 @@ module.exports = {
         'sass-loader',
       ]
     }, {
-      test: /\.js$/,
-      exclude: /node_modules/,
-      use: [{
-        loader: 'babel-loader'
-      }]
+        test: /\.(js|jsx)$/,
+        exclude: /node_modules/,
+        use: [{
+          loader: 'babel-loader'
+        }]
     }, {
       test: /\.vue$/,
       use: ['vue-loader']
-    }]
+    }
+    ]
   },
   resolve: {
     modules: ["node_modules", "bower_components"],

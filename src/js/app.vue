@@ -12,7 +12,6 @@
                 <router-link to="/about">About</router-link>
             </div>
         </div>
-
         <router-view class="mainpart">
 
         </router-view>

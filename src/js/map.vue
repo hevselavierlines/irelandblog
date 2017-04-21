@@ -162,6 +162,10 @@
 </script>
 
 <style lang="sass">
+    #themap {
+        width:100%;
+        height:100%;
+    }
     .blogbox-mask {
         position: fixed;
         z-index: 9990;
@@ -229,8 +233,7 @@
 
     .blogbox-enter .blogbox-container,
     .blogbox-leave-active .blogbox-container {
-        -webkit-transform: scale(1.1);
-        transform: scale(1.1);
+        opacity: 1.0;
     }
 
     .buttonclose {

@@ -11,6 +11,7 @@ let args = require('yargs').argv;
 let nunjucksRender = require('gulp-nunjucks-render');
 let autoprefixer = require('gulp-autoprefixer');
 let browserSync = require('browser-sync').create();
+let babel = require("gulp-babel");
 
 const env = (args.deploy) ? 'prod' : 'dev';
 console.log('using env:', env);
@@ -39,10 +40,11 @@ gulp.task('scss', function () {
 });
 
 gulp.task('js', function () {
-  gulp.src('src/js/*.js')
+  gulp.src('src/js/**/*.js')
     .pipe(plumber())
     .pipe(named())
-    .pipe(webpackStream(webpackConfig, webpack))
+      .pipe(babel({ presets: ['es2015'] }))
+      .pipe(webpackStream(webpackConfig, webpack))
     .pipe(gulp.dest('build/js'));
 });
 

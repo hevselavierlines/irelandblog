@@ -3,71 +3,42 @@
  */
 
 import axios from "axios";
+import firebase from "./firebase";
 export default {
     state: {
-        todos: [],
-        loading: false
+        loading: 0,
+        blogEntries: []
     },
+
     mutations: {
-        setLoading: function(state, loading) {
-            state.loading = loading;
+        setBlogEntries: function(state, payload) {
+            state.blogEntries = payload.entries;
         },
-        setTodos: function(state, payload) {
-            state.todos = payload.todos;
-        },
-        setError: function(state, payload) {
-            state.error = message;
+        setLoading: function(state, payload) {
+            state.loading = payload.loading;
         }
     },
     actions: {
-        loadTodos: function(context, payload) {
-            context.commit('setLoading', true);
-            axios.get('http://localhost:8080/todos')
-                .then((result) => {
-                    //set todos
-                    context.commit('setTodos', {todos: result.data.data});
-                    context.commit('setLoading', false);
-                }).catch((error) => {
-                    //set error
-                    context.commit('setError', error.message);
-                    context.commit('setLoading', false);
+        loadBlogEntries: function(context, payload) {
+            firebase.auth().signInAnonymously().catch(function(error) {
+                console.error(error.message);
+                //this.status = "error";
+                context.commit('setLoading', 3);
+            }).then(() => {
+                //this.status = "signed in";
+                firebase.database().ref('blogs').on('value', (snapshot) =>{
+                    let blogEntries = [];
+                    snapshot.forEach((childSnapshot) => {
+                        var value = childSnapshot.val();
+                        value.message = value.message.replace( new RegExp( "\n", "g" ),'<br/>');
+                        blogEntries.push(value);
+                    });
+                    blogEntries.reverse();
+                    //this.entries = blogEntries;
+                    //loadinginfo.style.display = "none";
+                    context.commit('setBlogEntries', {entries: blogEntries});
+                    context.commit('setLoading', 4);
                 });
-        },
-        addTodo: function(context, payload) {
-            context.commit('setLoading', true);
-            axios.post('http://localhost:8080/todos', {
-                title: payload.text
-            }).then((result) => {
-                context.commit('setTodos', {todos: result.data.data});
-                context.commit('setLoading', false);
-            }).catch(error => {
-                //set error
-                context.commit('setError', error.message);
-                context.commit('setLoading', false);
-            });
-        },
-        removeTodo: function(context, payload) {
-            context.commit('setLoading', true);
-            axios.delete('http://localhost:8080/todos/' + payload.id)
-                .then((result) => {
-                    //set todos
-                    context.commit('setTodos', {todos: result.data.data});
-                    context.commit('setLoading', false);
-                }).catch((error) => {
-                    //set error
-                    context.commit('setError', error.message);
-                    context.commit('setLoading', false);
-                });
-        },
-        setDone: function(context, payload) {
-            context.commit('setLoading', true);
-            axios.put('http://localhost:8080/todos/' + (payload.id) + '/' + ((payload.done) ? 'true' : 'false')).then((result) => {
-                context.commit('setTodos', {todos: result.data.data});
-                context.commit('setLoading', false);
-            }).catch(error => {
-                //set error
-                context.commit('setError', error.message);
-                context.commit('setLoading', false);
             });
         }
     }
