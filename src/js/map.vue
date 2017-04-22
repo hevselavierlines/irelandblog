@@ -62,7 +62,7 @@
         data: function() {
             return {
                 centre: ol.proj.fromLonLat([-7.933565, 53.473896]),
-                zoom: 7,
+                zoom: 6.7,
                 showblogbox: false,
                 selection: null
             }
@@ -113,7 +113,7 @@
             this.olmap.on("click", (ev) => {
                 const feature = this.olmap.forEachFeatureAtPixel(ev.pixel, (feature) => feature);
                 if (feature) {
-                    this.selection = feature.I.data;
+                    this.selection = feature.O.data;
                     console.log(this.selection);
                     this.showblogbox = true;
                 }

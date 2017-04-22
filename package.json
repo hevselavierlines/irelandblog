@@ -47,6 +47,7 @@
     "firebase": "^3.7.2",
     "openlayers": "^4.1.0",
     "vue": "^2.1.10",
+    "vue-fullcalendar": "^1.0.9",
     "vue-openlayers": "0.0.3",
     "vue-router": "^2.4.0",
     "vuex": "^2.3.1"

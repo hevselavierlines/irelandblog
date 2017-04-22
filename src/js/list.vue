@@ -40,7 +40,9 @@
             <div class="modal-mask" id="modal-mask">
                 <div class="modal-hidden" @click="hideModal(true)"></div>
                 <div class="modal-container" id="modul-container">
-                    <button class="btn btn-default buttonclose" @click="hideModal(true)">X</button>
+                    <button type="button" class="close buttonclose" aria-label="Close" @click="hideModal(true)">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
                     <a href="#" class="picture-before" v-on:click.prevent="lastPicture">
                         <img id="picturebefore" src="img/prev.png" ref="picturebefore">
                     </a>
@@ -48,6 +50,9 @@
                         <img id="picturenext" src="img/next.png" ref="picturenext">
                     </a>
                     <img class="modal-picture" id="modal-picture" v-bind:src="currentPicture">
+                    <div id="picturenumber" class="picture-number">
+                        <span class="badge">{{currentId + 1}}/{{currentLength}}</span>
+                    </div>
                 </div>
             </div>
         </transition>
@@ -63,6 +68,7 @@
                 selection: null,
                 currentPicture: "",
                 currentId: -1,
+                currentLength: -1,
                 modal: null
             }
         },
@@ -177,7 +183,7 @@
                 this.selection = blog;
                 this.currentId = pictureId;
                 this.currentPicture = blog.images[pictureId];
-
+                this.currentLength = blog.images.length;
                 this.checkArrows();
             },
             showModal: function() {
@@ -371,11 +377,6 @@
 
         display: block;
         vertical-align: middle;
-        /*margin-top: 3%;
-        margin-bottom: 3%;
-        margin-left: auto;
-        margin-right: auto;
-        max-width: 1000px;*/
         overflow:auto;
         background-color: rgba(0, 0, 0, 0.5);
     }
@@ -391,16 +392,18 @@
     }
 
     .modal-container {
+        position: absolute;
         padding: 20px;
         background-color: #EEEEEE;
         transition: all .3s ease;
         font-family: Helvetica, Arial, sans-serif;
         z-index: 9990;
-        height: 95%;
-        margin: auto;
-
-        margin-top: 1%;
-        margin-bottom: 3%;
+        top: 3%;
+        bottom: 3%;
+        left: 0;
+        right: 0;
+        margin-left: auto;
+        margin-right: auto;
         max-width: 1000px;
 
         vertical-align: middle;
@@ -412,9 +415,9 @@
         float: left;
         display: block;
         position: absolute;
-        height: 90%;
+        left: 0;
+        height: 100%;
         width: 50%;
-        max-width: 500px;
         z-index: 9900;
         top: 1%;
         visibility: visible;
@@ -443,12 +446,12 @@
         float: right;
         display: block;
         position: absolute;
-        height: 90%;
+        height: 100%;
         width: 50%;
-        margin-left: 480px;
-        max-width: 500px;
+        right: 0;
         z-index: 9900;
         top: 1%;
+        bottom: 1%;
         visibility: visible;
 
         opacity: 0;
@@ -475,10 +478,24 @@
         max-width: 100%;
         max-height: 100%;
         height: auto;
+        margin-top: auto;
+        margin-bottom: auto;
         display: block;
         margin-left: auto;
         margin-right: auto;
         vertical-align: middle;
+    }
+
+    .picture-number {
+        position: absolute;
+        width: 100%;
+        bottom: 12px;
+        left: 0;
+        right: 0;
+        margin-left: auto;
+        margin-right: auto;
+        text-align: center;
+        font-size: 12px;
     }
 
     .modal-header h3 {
@@ -520,7 +537,9 @@
         top: 1%;
         right: 1%;
         width: 50px;
-        height: 40px;
+        height: 50px;
+
+        border-radius: 4px;
     }
 
     @media (max-width: 1000px) {
@@ -543,6 +562,9 @@
             width: 98%;
             height: 35px;
             position: absolute;
+
+            background-color: #c0c0c0;
+            opacity: 1.0;
         }
 
         .modal-container {
@@ -579,7 +601,6 @@
             padding-top: auto;
             height: 90%;
         }
-
 
         .picture-next {
             height: 90%

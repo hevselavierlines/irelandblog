@@ -9,8 +9,8 @@ import VueRouter from "vue-router";
 import List from './list.vue';
 import About from './about.vue';
 import Map from './map.vue';
-import Contribute from './contribute.vue';
-
+import Calendar from './calendar.vue';
+import fullCalendar from 'vue-fullcalendar';
 
 
 // ...
@@ -21,6 +21,7 @@ import Contribute from './contribute.vue';
 
 Vue.use(Vuex);
 Vue.use(VueRouter);
+Vue.use(fullCalendar);
 
 const router = new VueRouter({
     routes: [
@@ -37,8 +38,8 @@ const router = new VueRouter({
             component: Map
         },
         {
-            path: '/secure/contribute',
-            component: Contribute
+            path: '/calendar',
+            component: Calendar
         }
     ]
 });
