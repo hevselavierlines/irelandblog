@@ -1,12 +1,20 @@
 <template lang="html">
     <div class="maincalendar">
-        <full-calendar :events="entries" lang="en"></full-calendar>
+        <full-calendar :events="entries" lang="en" @eventClick="eventClick"></full-calendar>
+        <modalblog ref="modal"></modalblog>
     </div>
 </template>
 <script>
 export default {
+    data: function() {
+        return {
+            showblogbox: false,
+            selection: null
+        }
+    },
     components : {
-        'full-calendar': require('vue-fullcalendar')
+        'full-calendar': require('vue-fullcalendar'),
+        'modalblog' : require('./modalblog.vue')
     },
     mounted: function () {
         this.$store.dispatch("loadBlogEntries");
@@ -26,6 +34,9 @@ export default {
             }
             var time = year + "-" + month + "-" + date;
             return time;
+        },
+        eventClick: function(event, jsEvent, pos) {
+            this.$refs.modal.appear(event.data);
         }
     },
     computed: {
@@ -40,7 +51,8 @@ export default {
                     dates.push({
                        title: elem.title,
                         start: time,
-                        end: time
+                        end: time,
+                        data: elem
                     });
                 }
                 return dates;
@@ -52,30 +64,12 @@ export default {
 }
 </script>
 
-<style lang="sass">
+<style lang="sass" scoped>
     /*$list-color: #DE7F3E;*/
     $list-color: #CCCCCC;
     $back-color: #12660C;
 
     .maincalendar {
         background-color: $back-color;
-    }
-
-    .event-item {
-        background-color: $back-color !important;
-        color: white !important;
-    }
-
-    .comp-full-calendar {
-        max-width: 100% !important;
-        margin: 25px 35px !important;
-        padding: 20px 0 !important;
-        background-color: $list-color !important;
-    }
-
-    @media (max-width: 640px) {
-        .comp-full-calendar {
-            margin: 25px 0 !important;
-        }
     }
 </style>

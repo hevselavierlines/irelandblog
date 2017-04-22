@@ -23,6 +23,7 @@
                 <label>Location:</label>
                 <input type="number" id="latitude" step="any">
                 <input type="number" id="longitude" step="any">
+                <button class="btn btn-default" v-on:click.prevent="locate">Locate</button>
             </div>
             <div class="form-group">
                 <label for="file">Pictures:</label>
@@ -150,6 +151,18 @@
                         console.log(error);
                         statusMessage = "Error " + error;
                     });
+            },
+            locate: function() {
+                if (navigator.geolocation) {
+                    navigator.geolocation.getCurrentPosition(
+                        function(location) {
+                            document.getElementById("latitude").value = location.coords.latitude;
+                            document.getElementById("longitude").value = location.coords.longitude;
+                        }
+                    );
+                } else {
+                    alert("Cannot get location");
+                }
             }
 
             /*send: function(title, message) {
@@ -214,15 +227,6 @@
         mounted: function() {
             var progressBar = document.getElementById("progress");
             progressBar.style.visibility = "hidden";
-
-            if (navigator.geolocation) {
-                navigator.geolocation.getCurrentPosition(
-                    function(location) {
-                        document.getElementById("latitude").value = location.coords.latitude;
-                        document.getElementById("longitude").value = location.coords.longitude;
-                    }
-                );
-            }
         }
     }
 </script>

@@ -1,2 +1,113 @@
 @import "imports/layout";
 @import "imports/bootstrap";
+
+//blog modal
+.blogbox-mask {
+  position: fixed;
+  z-index: 9990;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  transition: opacity .3s ease;
+  overflow: scroll;
+}
+
+.blogbox-wrapper {
+  display: block;
+  vertical-align: middle;
+  margin: 5% auto;
+  width: 90%;
+}
+
+.blogbox-hidden{
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: -1;
+  overflow: scroll;
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+.blogbox-container {
+  width: 100%;
+  padding: 20px 30px;
+  background-color: #EEEEEE;
+  border-radius: 2px;
+  transition: all .3s ease;
+  font-family: Helvetica, Arial, sans-serif;
+  overflow: scroll;
+  z-index: 9998;
+}
+
+.blogbox-header h3 {
+  margin-top: 0;
+  color: #3FCC58;
+}
+
+.blogbox-body {
+  margin: 20px 0;
+}
+/*
+ * The following styles are auto-applied to elements with
+ * transition="blogbox" when their visibility is toggled
+ * by Vue.js.
+ *
+ * You can easily play with the blogbox transition by editing
+ * these styles.
+ */
+
+.blogbox-enter {
+  opacity: 0;
+}
+
+.blogbox-leave-active {
+  opacity: 0;
+}
+
+.blogbox-enter .blogbox-container,
+.blogbox-leave-active .blogbox-container {
+  opacity: 1.0;
+}
+
+.buttonclose {
+  position: fixed;
+  right: 5%;
+  top: 10%;
+  z-index: 9999;
+}
+
+@media (min-width: 480px) {
+  .buttonclose {
+    padding: 8px 16px;
+  }
+}
+
+//calender overriding
+$list-color: #CCCCCC;
+$back-color: #12660C;
+
+.event-item {
+  background-color: $back-color !important;
+  color: white !important;
+}
+
+.comp-full-calendar {
+  max-width: 100% !important;
+  margin: 25px 45px !important;
+  padding: 20px 0 !important;
+  background-color: $list-color !important;
+}
+
+@media (max-width: 640px) {
+  .comp-full-calendar {
+    margin: 25px 0 !important;
+  }
+  .event-item {
+    margin: 2px 0 !important;
+    padding: 0 !important;
+    font-size: 10px !important;
+  }
+}
