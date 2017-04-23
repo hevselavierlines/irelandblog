@@ -3,6 +3,7 @@
         <div class="loadinginfo" id="loadinginfo" v-if="loading < 4">
             Loading...
         <img src="img/spinner.gif" height="100px"/></div>
+        <h3 v-if="error">{{error.message}}</h3>
     <div class="container-fluid mainlist">
         <ul class="bloglist">
             <li class="blogentry" v-for="entry in entries">
@@ -87,6 +88,9 @@
             },
             loading: function() {
                 return this.$store.state.loading;
+            },
+            error: function() {
+                return this.$store.state.error;
             }
         },
         methods: {

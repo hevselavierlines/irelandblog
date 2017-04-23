@@ -62,7 +62,7 @@
                     anchorXUnits: 'fraction',
                     anchorYUnits: 'pixels',
                     opacity: 0.75,
-                    src: '../img/shamrock_small.png'
+                    src: './img/shamrock_small.png'
                 }))
             });
 

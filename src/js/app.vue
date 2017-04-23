@@ -9,10 +9,10 @@
                 <router-link to="/map">Map</router-link>
             </div>
             <div class="col-md-2 menuelement">
-                <router-link to="/about">About</router-link>
+                <router-link to="/calendar">Calendar</router-link>
             </div>
             <div class="col-md-2 menuelement">
-                <router-link to="/calendar">Calendar</router-link>
+                <router-link to="/about">About</router-link>
             </div>
         </div>
         <router-view class="mainpart">
