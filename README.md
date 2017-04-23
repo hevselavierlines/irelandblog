@@ -21,6 +21,7 @@ This file shall contain:
 var config = {
     ...
 };//configuration data from the firebase.google.com website.
+
 export default config;
 </code>
 
