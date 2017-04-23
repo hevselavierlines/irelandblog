@@ -12,7 +12,7 @@ baseConfig.plugins = baseConfig.plugins.concat([
     comments: false
   }),
   new webpack.BannerPlugin({
-    banner: 'Brought to you by Ralph with  😃',
+    banner: 'Ireland Blog  😃',
     entryOnly: true
   }),
   new webpack.DefinePlugin({

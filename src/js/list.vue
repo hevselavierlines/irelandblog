@@ -70,7 +70,13 @@
                 currentPicture: "",
                 currentId: -1,
                 currentLength: -1,
-                modal: null
+                modal: null,
+                pictureBox: null,
+                animation: null,
+                boxAnimation: null,
+                pictureAlpha: 1.0,
+                boxAlpha: 0.0,
+                pictureChangeActive: false
             }
         },
         mounted: function () {
@@ -78,6 +84,7 @@
             this.$store.dispatch("loadBlogEntries");
 
             this.modal = document.getElementById("modal-mask");
+            this.pictureBox = document.getElementById("modal-picture");
             this.hideModal(false);
 
             window.addEventListener('keyup', this.keyEvent);
@@ -124,7 +131,7 @@
                 return time;
             },
             lastPicture: function(event) {
-                if(this.selection != null) {
+                if(this.selection != null && this.animation == null) {
                     this.currentId -= 1;
                     if (this.currentId >= 0) {
                         this.changePicture();
@@ -136,7 +143,7 @@
                 }
             },
             nextPicture: function(event) {
-                if(this.selection != null) {
+                if(this.selection != null && this.animation == null) {
                     this.currentId += 1;
                     if (this.currentId < this.selection.images.length) {
                         this.changePicture();
@@ -147,38 +154,43 @@
                 }
             },
             changePicture: function() {
-                var pictureBox = document.getElementById("modal-picture");
                 var lastPic = true;
                 var alpha = 1.0;
                 var curPicture = this.currentPicture;
                 var nextPicture = this.selection.images[this.currentId];
                 var t2 = null;
-                function fadeOutPicture() {
-                    alpha -= 0.05;
-                    if(alpha <= 0.1) {
-                        alpha = 0.1;
-                        clearInterval(t);
-                        applyPicture();
-                    }
-                    pictureBox.style.opacity = alpha;
+                this.pictureAlpha = 1.0;
+                this.animation = setInterval(this.fadeOutPicture, 10);
+            },
+            fadeOutPicture() {
+                var alpha = this.pictureAlpha;
+                alpha -= 0.05;
+                if(alpha <= 0.1) {
+                    alpha = 0.1;
+                    clearInterval(this.animation);
+                    this.applyPicture();
                 }
-
-                var t = setInterval(fadeOutPicture, 10);
-
-                function applyPicture() {
-                    pictureBox.setAttribute("src", nextPicture);
-                    pictureBox.onload = function() {
-                        t2 = setInterval(fadeInPicture, 10);
-                    };
+                this.pictureAlpha = alpha;
+                this.pictureBox.style.opacity = alpha;
+            },
+            applyPicture() {
+                var nextPicture = this.selection.images[this.currentId];
+                this.pictureBox.setAttribute("src", nextPicture);
+                this.pictureBox.onload = this.pictureLoaded;
+            },
+            pictureLoaded() {
+                this.animation = setInterval(this.fadeInPicture, 10);
+            },
+            fadeInPicture() {
+                var alpha = this.pictureAlpha;
+                alpha += 0.05;
+                if(alpha >= 1.0) {
+                    alpha = 1.0;
+                    clearInterval(this.animation);
+                    this.animation = null;
                 }
-                function fadeInPicture() {
-                    alpha += 0.05;
-                    if(alpha >= 1.0) {
-                        alpha = 1.0;
-                        clearInterval(t2);
-                    }
-                    pictureBox.style.opacity = alpha;
-                }
+                this.pictureAlpha = alpha;
+                this.pictureBox.style.opacity = alpha;
             },
             showPicture: function(blog, pictureId) {
                 if(this.selection == null) {
@@ -191,45 +203,52 @@
                 this.checkArrows();
             },
             showModal: function() {
-                var elem=this.modal;
-                var alpha = 0;
+                var elem = this.modal;
+                this.boxAlpha = 0.0;
+                var alpha = this.boxAlpha;
                 elem.style.opacity = alpha;
                 elem.style.display = "block";
 
-                function moreVisible()
-                {
-                    if(alpha >= 1) {
-                        clearInterval(t);
-                    }
-                    alpha += 0.05;
-                    elem.style.opacity = alpha;
-                    elem.style.filter="alpha(opacity="+(alpha*100)+")";
+                this.boxAnimation = setInterval(this.fadeInModal, 20);
+            },
+            fadeInModal: function() {
+                var alpha = this.boxAlpha;
+                if(alpha >= 1.0) {
+                    clearInterval(this.boxAnimation);
                 }
-
-                var t=setInterval(moreVisible, 20);
+                alpha += 0.05;
+                this.boxAlpha = alpha;
+                var elem = this.modal;
+                elem.style.opacity = alpha;
+                elem.style.filter="alpha(opacity="+(alpha*100)+")";
             },
             hideModal: function(animated) {
-                var elem=this.modal;
+                var elem = this.modal;
                 var alpha = 1.0;
+                this.boxAlpha = 1.0;
                 this.selection = null;
                 elem.style.opacity = alpha;
                 elem.style.display = "block";
 
                 if(animated) {
-                    function lessVisible() {
-                        if (alpha <= 0) {
-                            clearInterval(t);
-                            elem.style.display = "none";
-                        }
-                        alpha -= 0.05;
-                        elem.style.opacity = alpha;
-                        elem.style.filter = "alpha(opacity=" + (alpha * 100) + ")";
-                    }
-
-                    var t = setInterval(lessVisible, 25);
+                    this.boxAnimation = setInterval(this.fadeOutModal, 25);
                 } else {
                     elem.style.display = "none";
+                    this.boxAlpha = 0.0;
                 }
+            },
+            fadeOutModal : function() {
+                var alpha = this.boxAlpha;
+                var elem = this.modal;
+                if (alpha <= 0) {
+                    clearInterval(this.boxAnimation);
+                    elem.style.display = "none";
+                    this.pictureBox.setAttribute("src", "");
+                }
+                alpha -= 0.05;
+                this.boxAlpha = alpha;
+                elem.style.opacity = alpha;
+                elem.style.filter = "alpha(opacity=" + (alpha * 100) + ")";
             },
             checkArrows: function() {
                 var pictureId = this.currentId;
