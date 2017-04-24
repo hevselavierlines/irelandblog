@@ -58,7 +58,8 @@
                 title: '',
                 message: '',
                 images:[],
-                status: null
+                status: null,
+                IMAGE_SERVER: 'http://www.appc.at/irishblog/blogimage.php'
             }
         },
         methods: {
@@ -130,7 +131,7 @@
                 var loc_image = this.images;
                 var loc_sendSingleImage = this.sendSingleImage;
                 var loc_sendDb = this.sendDb;
-                axios.post('http://www.appc.at/irishblog/blogimage.php', this.images[currentId])
+                axios.post(this.IMAGE_SERVER, this.images[currentId])
                     .then(function(response) {
                         console.log(response.data);
                         var downloadURL = response.data.image;

@@ -25,6 +25,16 @@ var config = {
 export default config;
 </code>
 
+Important information for the contribute.vue!
+This is only for the administrator so it should not be accessible from the outside. Later this will be done in an iOS or Android app.
+
+Set up a PHP server with the file in server/blogimage.php
+Modify the file contribute.vue
+<code>
+ IMAGE_SERVER: 'http://www.appc.at/irishblog/blogimage.php'
+</code>
+Put your url to the php file here. This is only needed for uploads. 
+
 ## Configuration
 
 See webpack.config.dev.js for development and webpack.config.prod.js for production settings. 

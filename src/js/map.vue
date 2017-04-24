@@ -4,9 +4,8 @@
         <div id="themap">
         </div>
         <modalblog ref="modal"></modalblog>
+        {{loading}}
     </div>
-    <!-- template for the blogbox component -->
-
 </template>
 
 <script>
@@ -27,15 +26,58 @@
         data: function() {
             return {
                 centre: ol.proj.fromLonLat([-7.933565, 53.473896]),
-                zoom: 6.7,
+                zoom: 6,
                 showblogbox: false,
-                selection: null
+                selection: null,
+                vectorLayer: null,
+                iconStyle: null
             }
         },
         components: {
             'modalblog' : require('./modalblog.vue')
         },
+        computed: {
+            entries: function() {
+                console.log('loading entries');
+                var fullData = this.$store.state.blogEntries;
+                var vectorSource = new ol.source.Vector({
+                    //create empty vector
+                });
+                if(fullData.length > 0) {
+                    for(var i = 0; i < fullData.length; i++) {
+                        var elem = fullData[i];
+                        if(
+                            elem != null && elem !== undefined
+                            && elem.lon != null && elem.lon !== undefined
+                            && elem.lat != null && elem.lat !== undefined
+                            && (elem.lon < 0.0001 || elem.lon > 0.0001)
+                            && (elem.lat < 0.0001 || elem.lat > 0.0001)) {
+                            elem.message = elem.message.replace( new RegExp( "\n", "g" ),'<br/>');
+                            vectorSource.addFeature(new ol.Feature({
+                                geometry: new ol.geom.Point(ol.proj.transform([elem.lon, elem.lat], 'EPSG:4326',
+                                    'EPSG:3857')),
+                                data: elem
+                            }));
+                        }
+                    }
+                }
+                return vectorSource;
+            },
+            loading: function() {
+                var state = this.$store.state.loading;
+                if(state == 4 && this.olmap != null) {
+                    this.vectorLayer = new ol.layer.Vector({
+                        source: this.entries,
+                        style: this.iconStyle
+                    });
+
+                    this.olmap.addLayer(this.vectorLayer);
+                }
+                return state;
+            }
+        },
         mounted() {
+            this.$store.dispatch("loadBlogEntries");
             var vm = this;
             this.olmap = new ol.Map({
                 layers: [
@@ -52,11 +94,7 @@
             outsidemap = this.olmap;
             var map = this.olmap;
 
-            var vectorSource = new ol.source.Vector({
-                //create empty vector
-            });
-
-            var iconStyle = new ol.style.Style({
+            this.iconStyle = new ol.style.Style({
                 image: new ol.style.Icon( ({
                     anchor: [0.5, 25],
                     anchorXUnits: 'fraction',
@@ -66,44 +104,11 @@
                 }))
             });
 
-            var vectorLayer = new ol.layer.Vector({
-                source: vectorSource,
-                style: iconStyle,
-            });
-
-            this.olmap.addLayer(vectorLayer);
-
             this.olmap.on("click", (ev) => {
                 const feature = this.olmap.forEachFeatureAtPixel(ev.pixel, (feature) => feature);
                 if (feature) {
                     vm.$refs.modal.appear(feature.O.data);
                 }
-            });
-
-            firebase.auth().signInAnonymously().catch(function(error) {
-                console.error(error.message);
-            }).then(() => {
-                window.dispatchEvent(new Event('resize'));
-                var index = 0;
-                firebase.database().ref('blogs').on('value', (snapshot) =>{
-                    snapshot.forEach((childSnapshot) => {
-                        var elem = childSnapshot.val();
-                        if(
-                            elem != null && elem !== undefined
-                            && elem.lon != null && elem.lon !== undefined
-                            && elem.lat != null && elem.lat !== undefined
-                            && (elem.lon < 0.0001 || elem.lon > 0.0001)
-                            && (elem.lat < 0.0001 || elem.lat > 0.0001)) {
-                                elem.message = elem.message.replace( new RegExp( "\n", "g" ),'<br/>');
-                                vectorSource.addFeature(new ol.Feature({
-                                    geometry: new ol.geom.Point(ol.proj.transform([elem.lon, elem.lat], 'EPSG:4326',
-                                        'EPSG:3857')),
-                                    data: elem
-                                }));
-                        }
-                        index++;
-                    });
-                });
             });
         },
     };

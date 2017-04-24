@@ -6,7 +6,7 @@ import axios from "axios";
 import firebase from "./firebase";
 export default {
     state: {
-        loading: 0,
+        loading: 0, //0 init, 1 started, 2 undefined, 3 error, 4 ok
         blogEntries: [],
         error: null
     },
@@ -24,12 +24,13 @@ export default {
     },
     actions: {
         loadBlogEntries: function(context, payload) {
+            var vm = this;
             firebase.auth().signInAnonymously().catch(function(error) {
                 context.commit('setError', {error: error});
-                context.commit('setLoading', 3);
-                console.log(error);
+                context.commit('setLoading', {loading: 3});
+                console.error(error);
             }).then(() => {
-                context.commit('setLoading', 1);
+                context.commit('setLoading', {loading: 1});
                 firebase.database().ref('blogs').on('value', (snapshot) =>{
                     let blogEntries = [];
                     snapshot.forEach((childSnapshot) => {
@@ -38,10 +39,8 @@ export default {
                         blogEntries.push(value);
                     });
                     blogEntries.reverse();
-                    //this.entries = blogEntries;
-                    //loadinginfo.style.display = "none";
                     context.commit('setBlogEntries', {entries: blogEntries});
-                    context.commit('setLoading', 4);
+                    context.commit('setLoading', {loading: 4});
                 });
             });
         }

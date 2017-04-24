@@ -12,13 +12,6 @@ import Map from './map.vue';
 import Calendar from './calendar.vue';
 import fullCalendar from 'vue-fullcalendar';
 
-
-// ...
-// at some point require vue-openlayers TODO: simplify to require("vue-openlayers")
-// ...
-// then install the plugin
-
-
 Vue.use(Vuex);
 Vue.use(VueRouter);
 Vue.use(fullCalendar);
