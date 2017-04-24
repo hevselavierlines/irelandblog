@@ -14,15 +14,6 @@
     var outsidemap;
     export default  {
         name: "OLMap",
-        props: {
-            autoCenter: Boolean,
-            center: {
-                type: Array,
-                default: () => {
-                    return [-7.933565, 53.473896];
-                }
-            }
-        },
         data: function() {
             return {
                 centre: ol.proj.fromLonLat([-7.933565, 53.473896]),
@@ -76,7 +67,7 @@
                 return state;
             }
         },
-        mounted() {
+        mounted: function() {
             this.$store.dispatch("loadBlogEntries");
             var vm = this;
             this.olmap = new ol.Map({
@@ -104,8 +95,10 @@
                 }))
             });
 
-            this.olmap.on("click", (ev) => {
-                const feature = this.olmap.forEachFeatureAtPixel(ev.pixel, (feature) => feature);
+            vm.olmap.on("click", function (ev) {
+                var feature = vm.olmap.forEachFeatureAtPixel(ev.pixel, function (feature) {
+                    return feature;
+                });
                 if (feature) {
                     vm.$refs.modal.appear(feature.O.data);
                 }

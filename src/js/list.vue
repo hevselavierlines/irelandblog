@@ -162,7 +162,7 @@
                 this.pictureAlpha = 1.0;
                 this.animation = setInterval(this.fadeOutPicture, 10);
             },
-            fadeOutPicture() {
+            fadeOutPicture: function() {
                 var alpha = this.pictureAlpha;
                 alpha -= 0.05;
                 if(alpha <= 0.1) {
@@ -173,15 +173,15 @@
                 this.pictureAlpha = alpha;
                 this.pictureBox.style.opacity = alpha;
             },
-            applyPicture() {
+            applyPicture: function() {
                 var nextPicture = this.selection.images[this.currentId];
                 this.pictureBox.setAttribute("src", nextPicture);
                 this.pictureBox.onload = this.pictureLoaded;
             },
-            pictureLoaded() {
+            pictureLoaded: function() {
                 this.animation = setInterval(this.fadeInPicture, 10);
             },
-            fadeInPicture() {
+            fadeInPicture: function() {
                 var alpha = this.pictureAlpha;
                 alpha += 0.05;
                 if(alpha >= 1.0) {

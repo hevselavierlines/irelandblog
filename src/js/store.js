@@ -29,18 +29,18 @@ export default {
                 context.commit('setError', {error: error});
                 context.commit('setLoading', {loading: 3});
                 console.error(error);
-            }).then(() => {
+            }).then(function() {
                 context.commit('setLoading', {loading: 1});
-                firebase.database().ref('blogs').on('value', (snapshot) =>{
-                    let blogEntries = [];
-                    snapshot.forEach((childSnapshot) => {
+                firebase.database().ref('blogs').on('value', function (snapshot) {
+                    var blogEntries = [];
+                    snapshot.forEach(function (childSnapshot) {
                         var value = childSnapshot.val();
-                        value.message = value.message.replace( new RegExp( "\n", "g" ),'<br/>');
+                        value.message = value.message.replace(new RegExp("\n", "g"), '<br/>');
                         blogEntries.push(value);
                     });
                     blogEntries.reverse();
-                    context.commit('setBlogEntries', {entries: blogEntries});
-                    context.commit('setLoading', {loading: 4});
+                    context.commit('setBlogEntries', { entries: blogEntries });
+                    context.commit('setLoading', { loading: 4 });
                 });
             });
         }

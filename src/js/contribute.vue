@@ -120,7 +120,7 @@
                 blogs.set(sending).catch(function(error) {
                     console.error(error);
                     statusMessage = "Error uploading " + error;
-                }).then(() => {
+                }).then(function() {
                     var progressBar = document.getElementById("progress");
                     var progress = document.getElementById("progress-bar");
                     progressBar.style.visibility = "hidden";
