@@ -14,7 +14,7 @@ A vue project for a travel blog especially about Ireland but it can be used for 
 
 Download the project
 <code>Run ```npm install```</code>
-Create your own firebase configuration at firebase.google.com and add the file firebase.config.js
+Create your own firebase configuration at firebase.google.com and add the file firebase.config.js to the js folder.
 This file shall contain:
 
 <code>
@@ -22,7 +22,7 @@ var config = {
     ...
 };//configuration data from the firebase.google.com website.
 
-export default config;
+export default config;//and add this line.
 </code>
 
 Important information for the contribute.vue!
@@ -54,3 +54,7 @@ add ```--deploy``` to every gulp task to run it in deployment mode.
 To build everything for deployment run:
  
 ```gulp --deploy```
+
+## Example
+
+beside the source code an online version already exists at http://www.irishblog.ml
