@@ -4,7 +4,7 @@
         <div id="themap">
         </div>
         <modalblog ref="modal"></modalblog>
-        {{loading}}
+        <div style="display: none">{{loading}}</div>
     </div>
 </template>
 
@@ -61,7 +61,6 @@
                         source: this.entries,
                         style: this.iconStyle
                     });
-
                     this.olmap.addLayer(this.vectorLayer);
                 }
                 return state;
@@ -103,7 +102,11 @@
                     vm.$refs.modal.appear(feature.O.data);
                 }
             });
-        },
+            vm.olmap.once('postrender', function(event) {
+                vm.olmap.updateSize();
+            });
+            this.olmap.updateSize();
+        }
     };
     window.onresize = function()
     {
@@ -116,7 +119,6 @@
             mape.setAttribute("height", h);
             mape.setAttribute("width", w);
         }
-
     };
 </script>
 
