@@ -13,7 +13,6 @@
     import firebase from "./firebase";
     var outsidemap;
     export default  {
-        name: "OLMap",
         data: function() {
             return {
                 centre: ol.proj.fromLonLat([-7.933565, 53.473896]),
@@ -21,18 +20,31 @@
                 showblogbox: false,
                 selection: null,
                 vectorLayer: null,
-                iconStyle: null
+                iconStyle: null,
+                olmap: null,
+                entriesAdded: false
             }
         },
         components: {
             'modalblog' : require('./modalblog.vue')
         },
+        methods: {
+            autosize: function() {
+                var h = window.outerHeight - 250;
+                var w = window.outerWidth;
+
+                var mape = document.getElementsByClassName("ol-unselectable")[0];
+
+                if (mape != null && mape !== undefined) {
+                    mape.setAttribute("height", h);
+                    mape.setAttribute("width", w);
+                }
+            }
+        },
         computed: {
             entries: function() {
-                console.log('loading entries');
                 var fullData = this.$store.state.blogEntries;
                 var vectorSource = new ol.source.Vector({
-                    //create empty vector
                 });
                 if(fullData.length > 0) {
                     for(var i = 0; i < fullData.length; i++) {
@@ -56,12 +68,13 @@
             },
             loading: function() {
                 var state = this.$store.state.loading;
-                if(state == 4 && this.olmap != null) {
+                if(state == 4 && this.olmap != null && !this.entriesAdded) {
                     this.vectorLayer = new ol.layer.Vector({
                         source: this.entries,
                         style: this.iconStyle
                     });
                     this.olmap.addLayer(this.vectorLayer);
+                    this.entriesAdded = true;
                 }
                 return state;
             }
@@ -76,6 +89,7 @@
                     })
                 ],
                 target: document.getElementById('themap'),
+                controls: ol.control.defaults(),
                 view: new ol.View({
                     center: this.centre,
                     zoom: this.zoom
@@ -103,15 +117,14 @@
                 }
             });
             vm.olmap.once('postrender', function(event) {
-                vm.olmap.updateSize();
+                resizeFunction();
             });
-            this.olmap.updateSize();
+            window.scrollTo(0, 0);
         }
     };
-    window.onresize = function()
-    {
-        var h = window.outerHeight - 250;
-        var w = window.outerWidth;
+    function resizeFunction() {
+        var h = window.innerHeight - 160;
+        var w = window.innerWidth;
 
         var mape = document.getElementsByClassName("ol-unselectable")[0];
 
@@ -119,6 +132,11 @@
             mape.setAttribute("height", h);
             mape.setAttribute("width", w);
         }
+        outsidemap.updateSize();
+    }
+    window.onresize = function()
+    {
+        resizeFunction();
     };
 </script>
 

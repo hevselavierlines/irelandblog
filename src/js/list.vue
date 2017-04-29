@@ -88,6 +88,7 @@
             this.hideModal(false);
 
             window.addEventListener('keyup', this.keyEvent);
+            window.scrollTo(0, 0);
         },
         computed: {
             entries: function() {
@@ -215,6 +216,7 @@
                 var alpha = this.boxAlpha;
                 if(alpha >= 1.0) {
                     clearInterval(this.boxAnimation);
+                    this.applyPicture();
                 }
                 alpha += 0.05;
                 this.boxAlpha = alpha;

@@ -31,7 +31,7 @@
             </h3>
             <p slot="text" align="justify" v-html="selection.message"></p>
             <div slot="images" class="row">
-                <div class="col-md-4 blogimage" v-for="(image, index) in selection.images">
+                <div class="col-md-4 blogboximage" v-for="(image, index) in selection.images">
                     <img class="img-rounded" v-bind:src="image" width="100%">
                 </div>
             </div>

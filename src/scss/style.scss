@@ -1,6 +1,10 @@
 @import "imports/layout";
 @import "imports/bootstrap";
 
+$list-color: #CCCCCC;
+$button-hover: #CCCCCC;
+$back-color: #12660C;
+
 //blog modal
 .blogbox-mask {
   position: fixed;
@@ -72,6 +76,10 @@
   opacity: 1.0;
 }
 
+.blogboximage {
+  padding: 0;
+}
+
 .buttonclose {
   position: fixed;
   right: 5%;
@@ -85,9 +93,35 @@
   }
 }
 
+//map overriding
+
+.ol-zoom {
+  position: fixed;
+  left: 10px;
+  top: 60px;
+  z-index: 8000;
+  width: 40px;
+  height: 80px;
+  border-radius: 5px;
+  background-color: rgba(128, 128, 128, 0.3);
+}
+.ol-zoom button {
+  display: block;
+  width: 96%;
+  margin: 2%;
+  height: 46%;
+  opacity: 1.0;
+  background-color: #ffffff;
+  font-size: 20px;
+  border-radius: 5px;
+}
+
+.ol-zoom button:hover {
+  background-color: $button-hover;
+}
+
 //calender overriding
-$list-color: #CCCCCC;
-$back-color: #12660C;
+
 
 .event-item {
   background-color: $back-color !important;

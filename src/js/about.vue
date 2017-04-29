@@ -49,6 +49,14 @@
     </div>
 </template>
 
+<script>
+    export default {
+        mounted: function () {
+            window.scrollTo(0, 0);
+        }
+    }
+</script>
+
 <style lang="sass" scoped>
     /*$list-color: #DE7F3E;*/
     $list-color: #CCCCCC;

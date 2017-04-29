@@ -18,6 +18,7 @@ export default {
     },
     mounted: function () {
         this.$store.dispatch("loadBlogEntries");
+        window.scrollTo(0, 0);
     },
     methods: {
         getTime: function(timestamp) {
@@ -25,7 +26,6 @@ export default {
             var year = a.getFullYear();
             var month = a.getMonth() + 1;
             var date = a.getDate();
-//start : '2016-08-25'
             if(month < 10) {
                 month = '0' + month;
             }

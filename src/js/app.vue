@@ -64,6 +64,15 @@
             font-size: 10px;
             padding: 14px 16px;
         }
+        .menuicon {
+            height: 100%;
+        }
+        .menuicon img {
+            height: 80%;
+            margin-top: auto;
+            margin-bottom: auto;
+            vertical-align: middle;
+        }
     }
 
     .menuelement a {
